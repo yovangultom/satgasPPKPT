@@ -1,0 +1,26 @@
+
+
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+@config 'tailwind.config.js';
+
+.fi.logo {
+  @apply h-10 md:h-12 lg:h-24;
+}
+.fi-fo-text-input.fi-disabled .fi-input-wrapper {
+    background-color: #e5e7eb !important; /* gray-200 */
+}
+
+/* Untuk Repeater */
+.fi-fo-repeater.fi-disabled {
+    background-color: #f9fafb !important; /* gray-50, sedikit berbeda agar ada pemisah visual */
+    border-color: #e5e7eb !important; /* gray-200 */
+}
+
+/* Kita juga perlu memastikan warna teks di dalam input yang di-disable 
+  tetap terlihat jelas.
+*/
+.fi-disabled .fi-input-wrapper input,
+.fi-disabled .fi-input-wrapper textarea {
+    -webkit-text-fill-color: #4b5563 !important; /* gray-600 */
+    color: #4b5563 !important;
+}
