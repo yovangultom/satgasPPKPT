@@ -3,15 +3,21 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Filament\Panel;
+use Illuminate\Support\Facades\Storage;
 
 
-class User extends Authenticatable
+
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     use HasFactory, Notifiable, HasRoles;
 
@@ -28,6 +34,8 @@ class User extends Authenticatable
         'status',
         'nim',
         'nip',
+        'foto_profil',
+
     ];
 
     /**
@@ -60,5 +68,21 @@ class User extends Authenticatable
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
+    }
+    public function getFilamentAvatarUrl(): ?string
+    {
+        if ($this->foto_profil) {
+            return Storage::disk('public')->url($this->foto_profil) . '?v=' . time();
+        }
+
+        return null;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if ($this->email === 'yovan.119140131@student.itera.ac.id') {
+            return true;
+        }
+        return $this->hasAnyRole(['admin', 'petugas', 'rektor', 'htl']);
     }
 }

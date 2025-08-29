@@ -6,7 +6,7 @@ use App\Filament\Resources\PengaduanResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Resources\Components\Tab; 
+use Filament\Resources\Components\Tab;
 
 class ListPengaduans extends ListRecords
 {
@@ -25,8 +25,8 @@ class ListPengaduans extends ListRecords
             'all' => Tab::make('Semua Pengaduan'),
 
             'belum_dikerjakan' => Tab::make('Belum Dikerjakan')
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('status_pengaduan', 'Pending'))
-                ->badge(PengaduanResource::getModel()::where('status_pengaduan', 'Pending')->count())
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('status_pengaduan', 'Menunggu'))
+                ->badge(PengaduanResource::getModel()::where('status_pengaduan', 'Menunggu')->count())
                 ->badgeColor('gray'),
 
             'sedang_dikerjakan' => Tab::make('Sedang Dikerjakan')

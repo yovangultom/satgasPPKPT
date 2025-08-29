@@ -81,7 +81,6 @@
                             </div>
                         </div>
 
-                        <!-- ===== DATA KORBAN (KONDISIONAL & DINAMIS) ===== -->
                         <div x-show="peranPelapor === 'Saksi'" x-transition class="">
                             <div class=" border-gray-900/10 pb-2">
                                 <h2 class="text-xl font-semibold leading-7 text-gray-900">Data Korban <span
@@ -155,7 +154,6 @@
                             </div>
                         </div>
 
-                        <!-- ===== DATA TERLAPOR (DINAMIS) ===== -->
                         <div class="">
                             <div class=" border-gray-900/10 pb-2">
                                 <h2 class="text-xl font-semibold leading-7 text-gray-900">Data Terlapor</h2>
@@ -227,7 +225,6 @@
                             </div>
                         </div>
 
-                        <!-- ===== DETAIL KEJADIAN ===== -->
                         <div class="">
                             <div class="border-b border-gray-900/10 pb-2">
                                 <h2 class="text-xl font-semibold leading-7 text-gray-900">Detail Kejadian</h2>
@@ -288,7 +285,6 @@
                             </div>
                         </div>
 
-                        <!-- ===== ALASAN & KEBUTUHAN ===== -->
                         <div class="">
                             <div class="border-b border-gray-900/10 pb-2">
                                 <h2 class="text-xl font-semibold leading-7 text-gray-900">Alasan Melapor & Kebutuhan
@@ -453,13 +449,11 @@
         </div>
     </div>
     @push('scripts')
-        {{-- 1. Memuat library signature pad dari internet --}}
         <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 
         <script>
             document.addEventListener('alpine:init', () => {
                 Alpine.data('formController', () => ({
-                    // State untuk form dinamis Anda
                     peranPelapor: 'Korban',
                     korbans: [],
                     terlapors: [{
@@ -470,14 +464,11 @@
                         status: ''
                     }],
 
-                    // State baru untuk signature pad
                     signaturePad: null,
                     signatureData: '',
                     signatureError: '',
 
-                    // Fungsi yang dijalankan saat halaman dimuat
                     init() {
-                        // Mengawasi perubahan peran
                         this.$watch('peranPelapor', value => {
                             if (value === 'Saksi' && this.korbans.length === 0) {
                                 this.korbans.push({
@@ -490,7 +481,6 @@
                             }
                         });
 
-                        // Menginisialisasi Signature Pad setelah DOM siap
                         this.$nextTick(() => {
                             const canvas = this.$refs.signatureCanvas;
                             const ratio = Math.max(window.devicePixelRatio || 1, 1);
@@ -503,25 +493,20 @@
                         });
                     },
 
-                    // Fungsi untuk membersihkan tanda tangan
                     clearSignature() {
                         if (this.signaturePad) this.signaturePad.clear();
                     },
 
-                    // Fungsi yang dijalankan saat tombol "Kirim" ditekan
                     submitForm() {
                         if (this.signaturePad.isEmpty()) {
                             this.signatureError = 'Tanda tangan wajib diisi.';
                             return;
                         }
 
-                        // 1. Update variabel dengan data gambar
                         this.signatureData = this.signaturePad.toDataURL('image/png');
                         this.signatureError = '';
 
-                        // 2. Tunggu Alpine selesai memperbarui input tersembunyi
                         this.$nextTick(() => {
-                            // 3. Baru kirim form
                             document.getElementById('laporForm').submit();
                         });
                     }

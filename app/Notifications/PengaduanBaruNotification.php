@@ -3,7 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Pengaduan;
-use App\Filament\Resources\PengaduanResource; // Pastikan ini di-import
+use App\Filament\Resources\PengaduanResource;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,7 +11,8 @@ use Illuminate\Notifications\Notification;
 use Filament\Notifications\Notification as FilamentNotification;
 use Filament\Notifications\Actions\Action;
 
-class PengaduanBaruNotification extends Notification
+class PengaduanBaruNotification extends Notification implements ShouldQueue
+
 {
     use Queueable;
 
@@ -24,7 +25,20 @@ class PengaduanBaruNotification extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'mail'];
+    }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        $url = PengaduanResource::getUrl('view', ['record' => $this->pengaduan]);
+
+        return (new MailMessage)
+            ->subject('Pengaduan Baru Diterima: #' . $this->pengaduan->nomor_pengaduan)
+            ->greeting('Halo, ' . $notifiable->name . '!')
+            ->line("Pengaduan baru dengan nomor {$this->pengaduan->nomor_pengaduan} telah diterima dan perlu diproses.")
+            ->line("Pengadu: {$this->pengaduan->user->name}")
+            ->action('Lihat Detail Pengaduan', $url)
+            ->salutation('Hormat kami, SATGAS PPKPT ITERA');
     }
 
     public function toDatabase(object $notifiable): array

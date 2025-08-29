@@ -7,7 +7,7 @@ use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ViewField;
-use Filament\Forms\Components\Hidden; // 1. Tambahkan use statement untuk Hidden
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
-
+use Filament\Forms\Components\FileUpload;
 
 class EditProfile extends Page implements HasForms
 {
@@ -28,28 +28,48 @@ class EditProfile extends Page implements HasForms
     protected static ?string $title = 'Profil Saya';
     protected static bool $shouldRegisterNavigation = false;
 
+    public ?array $photoData = [];
     public ?array $profileData = [];
     public ?array $passwordData = [];
 
     public function mount(): void
     {
-        $this->profileForm->fill(auth()->user()->attributesToArray());
+        $this->photoForm->fill(auth()->user()->attributesToArray());
+        $this->signatureForm->fill(auth()->user()->attributesToArray());
         $this->passwordForm->fill();
     }
 
-    public function profileForm(Form $form): Form
+    public function photoForm(Form $form): Form
     {
         return $form
             ->schema([
                 Section::make('Informasi Profil')
                     ->schema([
+                        FileUpload::make('foto_profil')
+                            ->label('Foto Profil')
+                            ->image()
+                            ->avatar()
+                            ->imageEditor()
+                            ->circleCropper()
+                            ->disk('public')
+                            ->directory('foto-profil'),
                         TextInput::make('name')->label('Nama')->required()->disabled(),
                         TextInput::make('email')->label('Email')->email()->required()->disabled(),
-                        Hidden::make('tanda_tangan'),
+                    ])
+            ])
+            ->model(auth()->user())
+            ->statePath('photoData');
+    }
 
-                        // [PERUBAHAN] Hapus baris ->viewData(...) dari sini
+    public function signatureForm(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Section::make('Tanda Tangan Digital')
+                    ->schema([
+                        Hidden::make('tanda_tangan'),
                         ViewField::make('signature_ui')
-                            ->label('Tanda Tangan Digital Anda')
+                            ->label('Tanda Tangan Anda')
                             ->view('filament.forms.components.signature-pad'),
                     ])
             ])
@@ -63,25 +83,9 @@ class EditProfile extends Page implements HasForms
             ->schema([
                 Section::make('Ubah Password')
                     ->schema([
-                        TextInput::make('current_password')
-                            ->label('Password Saat Ini')
-                            ->password()
-                            ->required()
-                            ->currentPassword(),
-                        TextInput::make('new_password')
-                            ->label('Password Baru')
-                            ->password()
-                            ->required()
-                            ->rule(Password::default())
-                            ->autocomplete('new-password')
-                            ->dehydrateStateUsing(fn($state): string => Hash::make($state))
-                            ->live(debounce: 500)
-                            ->same('new_password_confirmation'),
-                        TextInput::make('new_password_confirmation')
-                            ->label('Konfirmasi Password Baru')
-                            ->password()
-                            ->required()
-                            ->dehydrated(false),
+                        TextInput::make('current_password')->label('Password Saat Ini')->password()->required()->currentPassword(),
+                        TextInput::make('new_password')->label('Password Baru')->password()->required()->rule(Password::default())->autocomplete('new-password')->dehydrateStateUsing(fn($state): string => Hash::make($state))->live(debounce: 500)->same('new_password_confirmation'),
+                        TextInput::make('new_password_confirmation')->label('Konfirmasi Password Baru')->password()->required()->dehydrated(false),
                     ])
             ])
             ->statePath('passwordData');
@@ -90,15 +94,60 @@ class EditProfile extends Page implements HasForms
     protected function getForms(): array
     {
         return [
-            'profileForm',
+            'photoForm',
+            'signatureForm',
             'passwordForm',
         ];
     }
 
-    // 5. Logika updateProfile sekarang akan berfungsi karena menerima data dari Hidden input
-    public function updateProfile(): void
+    public function getUpdatePhotoFormActions(): array
     {
-        $data = $this->profileForm->getState();
+        return [
+            Action::make('updatePhoto')
+                ->label('Simpan Perubahan')
+                ->submit('updatePhoto'),
+        ];
+    }
+
+    public function getUpdateSignatureFormActions(): array
+    {
+        return [
+            Action::make('updateSignature')
+                ->label('Simpan Tanda Tangan')
+                ->submit('updateSignature'),
+        ];
+    }
+
+    public function getUpdatePasswordFormActions(): array
+    {
+        return [
+            Action::make('updatePassword')
+                ->label('Ubah Password')
+                ->submit('updatePassword'),
+        ];
+    }
+
+    public function updatePhoto(): void
+    {
+        $data = $this->photoForm->getState();
+        $user = auth()->user();
+
+        if ($user->foto_profil && ($data['foto_profil'] ?? null)) {
+            Storage::disk('public')->delete($user->foto_profil);
+        }
+
+        $user->update($data);
+
+        $this->sendSuccessNotification('Foto Profil Berhasil Diperbarui');
+
+        // --- SOLUSI: Paksa refresh halaman dari backend dengan cache buster ---
+        $this->redirect(static::getUrl() . '?v=' . time());
+    }
+
+
+    public function updateSignature(): void
+    {
+        $data = $this->signatureForm->getState();
         $user = auth()->user();
 
         if (!empty($data['tanda_tangan']) && Str::startsWith($data['tanda_tangan'], 'data:image')) {
@@ -110,15 +159,12 @@ class EditProfile extends Page implements HasForms
             $filename = 'tanda-tangan/' . $user->id . '_' . time() . '.png';
             Storage::disk('public')->put($filename, $imageData);
             $data['tanda_tangan'] = $filename;
+
+            $user->update($data);
+            $this->sendSuccessNotification('Tanda Tangan Berhasil Diperbarui');
         } else {
-            unset($data['tanda_tangan']);
+            Notification::make()->warning()->title('Tidak ada perubahan tanda tangan.')->send();
         }
-
-        $user->update($data);
-
-        $this->sendSuccessNotification('Profil Berhasil Diperbarui');
-        $this->dispatch('profile-updated');
-        $this->profileForm->fill($user->attributesToArray());
     }
 
     public function updatePassword(): void
@@ -131,9 +177,6 @@ class EditProfile extends Page implements HasForms
 
     private function sendSuccessNotification(string $message): void
     {
-        Notification::make()
-            ->success()
-            ->title($message)
-            ->send();
+        Notification::make()->success()->title($message)->send();
     }
 }

@@ -59,8 +59,6 @@ class AdminPanelProvider extends PanelProvider
                 PengaduanStatsOverview::class,
                 RektorStatsOverview::class,
                 HtlStatsOverview::class,
-
-
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -78,7 +76,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
                 \App\Http\Middleware\EnsureUserHasRole::class,
-            ])
-            ->viteTheme('resources/css/filament/admin/theme.css');
+            ]);
+        // ->viteTheme('resources/css/filament/admin/theme.css');
     }
 }

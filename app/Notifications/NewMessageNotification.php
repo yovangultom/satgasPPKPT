@@ -30,7 +30,6 @@ class NewMessageNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        // PERUBAHAN: Hanya kirim melalui channel 'mail'
         return ['database', 'mail'];
     }
 
@@ -42,7 +41,6 @@ class NewMessageNotification extends Notification implements ShouldQueue
         $url = route('pengaduan.show', ['pengaduan' => $this->pengaduan->id]);
         $pengirim = $this->message->user->name;
 
-        // Email ini hanya akan dikirim ke pelapor
         return (new MailMessage)
             ->subject('Pesan Baru pada Pengaduan Anda: ' . $this->pengaduan->nomor_pengaduan)
             ->greeting('Halo, ' . $notifiable->name . '!')
@@ -50,7 +48,7 @@ class NewMessageNotification extends Notification implements ShouldQueue
             ->line('Pengirim: ' . $pengirim)
             ->line('Isi Pesan: "' . ($this->message->body ?? 'Lihat lampiran.') . '"')
             ->action('Lihat Detail Pengaduan', $url)
-            ->line('Terima kasih telah menggunakan layanan kami.');
+            ->salutation('Hormat kami, SATGAS PPKPT ITERA');
     }
     public function toDatabase(object $notifiable): array
     {
@@ -71,9 +69,8 @@ class NewMessageNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'pengaduan_id' => $this->pengaduan->id,
-            'nomor_pengaduan' => $this->pengaduan->nomor_pengaduan,
-            'message' => 'Anda menerima pesan baru dari ' . $this->message->user->name . ' terkait pengaduan ' . $this->pengaduan->nomor_pengaduan . '.',
+            'title' => 'Pesan Baru Diterima',
+            'body' => 'Anda menerima pesan baru dari ' . $this->message->user->name . ' pada pengaduan #' . $this->pengaduan->nomor_pengaduan . '.',
             'url' => route('pengaduan.show', $this->pengaduan->id),
         ];
     }
