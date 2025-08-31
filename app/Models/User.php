@@ -14,6 +14,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Filament\Panel;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\CustomResetPasswordNotification;
 
 
 
@@ -84,5 +85,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             return true;
         }
         return $this->hasAnyRole(['admin', 'petugas', 'rektor', 'htl']);
+    }
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPasswordNotification($token));
     }
 }

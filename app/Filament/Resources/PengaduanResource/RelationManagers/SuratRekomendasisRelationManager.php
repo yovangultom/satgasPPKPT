@@ -15,8 +15,11 @@ use App\Models\LaporanHasilPemeriksaan;
 use App\Models\PasalPelanggaran;
 use App\Models\PasalSanksi;
 use App\Models\SuratRekomendasi;
+use App\Models\User;
+use App\Notifications\RekomendasiBaruNotification;
 use Illuminate\Support\Facades\Auth;
-use Filament\Notifications\Notification;
+use Filament\Notifications\Notification as FilamentNotification;
+use Illuminate\Support\Facades\Notification;
 
 class SuratRekomendasisRelationManager extends RelationManager
 {
@@ -324,13 +327,17 @@ class SuratRekomendasisRelationManager extends RelationManager
                         $data['user_id'] = Auth::id();
                         return $data;
                     })
-                    ->after(function () {
+                    ->after(function (Model $record) {
                         /** @var \App\Models\Pengaduan $pengaduan */
                         $pengaduan = $this->getOwnerRecord();
                         $pengaduan->update(['status_pengaduan' => 'Tindak Lanjut Kesimpulan dan Rekomendasi']);
+                        $rektors = User::role('rektor')->get();
+                        if ($rektors->isNotEmpty()) {
+                            Notification::send($rektors, new RekomendasiBaruNotification($record));
+                        }
                     })
                     ->successNotification(
-                        Notification::make()
+                        FilamentNotification::make()
                             ->success()
                             ->title('Surat Rekomendasi Berhasil Dibuat')
                             ->body('Status pengaduan telah diperbarui menjadi Tindak Lanjut Kesimpulan dan Rekomendasi.')
@@ -376,20 +383,16 @@ class SuratRekomendasisRelationManager extends RelationManager
                 })->implode("\n");
                 $formData['pasal_pelanggaran_display'] = $pasalText;
             } else {
-                // Pastikan field ini kosong jika tidak ada pasal terkait.
                 $formData['pasal_pelanggaran_display'] = null;
             }
         }
 
-        // --- PERBAIKAN: Ekstrak data dari kolom JSON 'rekomendasi_data' ---
         if ($record->status_terbukti === 'terbukti' && !empty($record->rekomendasi_data)) {
-            // Asumsi model SuratRekomendasi punya cast '$casts = ['rekomendasi_data' => 'array']'
             $rekomendasi = $record->rekomendasi_data;
             $formData['status_pelaku_manual'] = $rekomendasi['status_pelaku_manual'] ?? null;
             $formData['jenis_sanksi'] = $rekomendasi['jenis_sanksi'] ?? null;
             $formData['sanksi_administratif'] = $rekomendasi['sanksi_administratif'] ?? null;
         }
-        // --- AKHIR PERBAIKAN ---
 
         if (!empty($formData['pihak_direkomendasi_data'])) {
             $rebuiltPihakDirekomendasi = [];

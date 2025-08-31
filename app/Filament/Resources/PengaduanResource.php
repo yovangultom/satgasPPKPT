@@ -66,7 +66,7 @@ class PengaduanResource extends Resource
                             ->label('Status')
                             ->badge()
                             ->color(fn(string $state): string => match ($state) {
-                                'Pending' => 'gray',
+                                'Menunggu' => 'gray',
                                 'Verifikasi' => 'warning',
                                 'Investigasi' => 'info',
                                 'Penyusunan Kesimpulan dan Rekomendasi' => 'primary',
@@ -187,7 +187,7 @@ class PengaduanResource extends Resource
                 Tables\Columns\TextColumn::make('jenis_kejadian')->label('Judul/Jenis Kejadian')->limit(40)->searchable(),
                 Tables\Columns\TextColumn::make('tanggal_pelaporan')->dateTime('d M Y, H:i')->sortable(),
                 Tables\Columns\TextColumn::make('status_pengaduan')->searchable()->badge()->color(fn(string $state): string => match ($state) {
-                    'Pending' => 'gray',
+                    'Menunggu' => 'gray',
                     'Verifikasi' => 'warning',
                     'Investigasi' => 'info',
                     'Penyusunan Kesimpulan dan Rekomendasi' => 'primary',
@@ -210,7 +210,7 @@ class PengaduanResource extends Resource
                     ->form(function (Pengaduan $record) {
                         $usedStatuses = $record->statusHistories()->pluck('status')->toArray();
                         $allStatuses = [
-                            'Pending' => 'Pending',
+                            'Menunggu' => 'Menunggu',
                             'Verifikasi' => 'Verifikasi',
                             'Investigasi' => 'Investigasi',
                             'Penyusunan Kesimpulan dan Rekomendasi' => 'Penyusunan Kesimpulan dan Rekomendasi',

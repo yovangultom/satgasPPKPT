@@ -12,16 +12,13 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="icon" href="{{ asset('images/Logo PPKPT 2025 Square Black - CROP.png') }}" type="image/png">
+
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
-
     <div>
         <div>
             {{ $slot }}
         </div>
     </div>
-    {{-- <div class="min-h-screen flex flex-col sm:justify-center items-center  ">
-        <div class="w-full sm:max-w-md bg-gray shadow-md overflow-hidden sm:rounded-lg">
-
-        </div> --}}

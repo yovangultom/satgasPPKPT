@@ -76,6 +76,17 @@
                     </x-primary-button>
                 </div>
             </form>
+            @if (Route::has('register'))
+                <div class="text-center mt-6">
+                    <p class="text-sm text-gray-600">
+                        Belum punya akun?
+                        <a href="{{ route('register') }}"
+                            class="font-semibold text-blue-600 hover:text-blue-800 underline">
+                            Daftar di sini
+                        </a>
+                    </p>
+                </div>
+            @endif
         </div>
 
         <div class="text-center mt-6 text-sm text-gray-500">

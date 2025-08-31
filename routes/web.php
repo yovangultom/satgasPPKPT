@@ -31,14 +31,11 @@ Route::middleware('auth')->group(function () {
         ->middleware('auth')
         ->name('pengaduan.storeMessage');
     Route::get('/bap/export/{bap}', [PengaduanPdfController::class, 'exportBapPdf'])->name('bap.export.pdf');
-   
     Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notification.read');
-
     Route::get('/borang-penanganan/{borangPenanganan}/export-pdf', [PengaduanPdfController::class, 'exportPenangananPdf'])
         ->name('borang.export.penanganan');
     Route::get('/borang-pemeriksaan/{borangPemeriksaan}/export-pdf', [PengaduanPdfController::class, 'exportPemeriksaanPdf'])
         ->name('borang.export.pemeriksaan');
-
     Route::get('/laporan-hasil-pemeriksaan/{lhp}/export-pdf', [PengaduanPdfController::class, 'exportLhpPdf'])
         ->name('lhp.export.pdf');
     Route::get('/surat_rekomendasi/{suratRekomendasi}/pdf', [PengaduanPdfController::class, 'exportSuratRekomendasiPdf'])
