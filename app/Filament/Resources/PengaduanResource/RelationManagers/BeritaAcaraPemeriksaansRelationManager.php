@@ -196,6 +196,7 @@ class BeritaAcaraPemeriksaansRelationManager extends RelationManager
                 Tables\Actions\Action::make('view')
                     ->modalHeading('Berita Acara Pemeriksaan')
                     ->label('Lihat')
+                    ->icon('heroicon-o-eye')
                     ->color('gray')
                     ->modalHeading('Berita Acara Pemeriksaan')
                     ->form($this->getFormSchema())

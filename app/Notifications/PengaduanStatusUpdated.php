@@ -8,7 +8,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-//                  👇 TAMBAHKAN BAGIAN INI
 class PengaduanStatusUpdated extends Notification implements ShouldQueue
 {
     use Queueable;

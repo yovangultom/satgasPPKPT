@@ -349,6 +349,7 @@ class SuratRekomendasisRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->label('Lihat')
+                    ->icon('heroicon-o-eye')
                     ->color('gray')
                     ->modalHeading('Surat Rekomendasi')
                     ->fillForm(fn(SuratRekomendasi $record): array => $this->fillInitialData($record)),

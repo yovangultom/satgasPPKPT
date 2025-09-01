@@ -15,16 +15,12 @@ class NotificationComposer
      */
     public function compose(View $view)
     {
-        // Siapkan variabel kosong sebagai default
         $unreadNotifications = [];
 
-        // Periksa apakah ada pengguna yang sedang login
         if (Auth::check()) {
-            // Jika ada, ambil 5 notifikasi terbaru yang belum dibaca
             $unreadNotifications = Auth::user()->unreadNotifications()->take(5)->get();
         }
 
-        // Kirim variabel $unreadNotifications ke view yang menggunakan composer ini
         $view->with('unreadNotifications', $unreadNotifications);
     }
 }

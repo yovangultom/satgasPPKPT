@@ -71,7 +71,7 @@
         .judul-surat {
             font-weight: bold;
             text-decoration: underline;
-            font-size: 14pt;
+            font-size: 12pt;
             margin-bottom: 5px;
         }
 
@@ -236,9 +236,8 @@
         </div>
         <p class="">Demikian untuk dilaksanakan sebagaimana mestinya.</p>
         <div style="margin-top: 20px; width: 40%; float: right; text-align: center; page-break-inside: avoid;">
-            <p style="margin-bottom: 0px;">Bandar Lampung, {{ now()->translatedFormat('j F Y') }}</p>
-            <p>Ketua Satgas PPKPT Itera,</p>
-
+            <p style="margin-bottom: 0px; margin-top: 0px;">Bandar Lampung, {{ now()->translatedFormat('j F Y') }}</p>
+            <p style="margin-bottom: 0px; margin-top: 0px;">Ketua Satgas PPKPT ITERA,</p>
             @if (
                 $ketuaSatgas &&
                     $ketuaSatgas->tanda_tangan &&
@@ -254,7 +253,7 @@
                 <br><br><br><br>
             @endif
 
-            <p style="font-weight: bold; text-decoration: underline;">
+            <p style="font-weight: bold; text-decoration: underline; margin-top: 0; margin-bottom: 0;">
                 {{ $ketuaSatgas->nama ?? 'Nama Ketua Belum Diatur' }}
             </p>
             <p style="margin-top: 0;">

@@ -20,12 +20,12 @@ class SuratPanggilan extends Model
         'nama_pihak',
         'status_pihak',
         'peran_pihak',
-        'nim',                  // <-- Tambahkan ini
-        'semester',             // <-- Tambahkan ini
-        'program_studi',        // <-- Tambahkan ini
-        'nip',                  // <-- Tambahkan ini
-        'fakultas_unit_kerja',  // <-- Tambahkan ini
-        'info_tambahan',        // <-- Tambahkan ini
+        'nim',
+        'semester',
+        'program_studi',
+        'nip',
+        'fakultas_unit_kerja',
+        'info_tambahan',
         'tanggal_panggilan',
         'waktu_panggilan',
         'tempat_panggilan',
@@ -39,7 +39,7 @@ class SuratPanggilan extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'info_tambahan' => 'array', // <-- Tambahkan ini untuk kolom JSON
+        'info_tambahan' => 'array',
     ];
 
     /**

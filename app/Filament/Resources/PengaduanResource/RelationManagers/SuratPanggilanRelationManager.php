@@ -31,10 +31,6 @@ use App\Models\KetuaSatgas;
 use App\Http\Controllers\PengaduanPdfController;
 
 
-
-
-
-
 class SuratPanggilanRelationManager extends RelationManager
 {
     protected static string $relationship = 'suratPanggilans';
