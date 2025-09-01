@@ -15,6 +15,8 @@ use Filament\Forms\Components\Fieldset;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\BorangPenanganan;
+use Filament\Notifications\Notification as FilamentNotification;
+use Illuminate\Support\Facades\Notification;
 
 class BorangPenanganansRelationManager extends RelationManager
 {
@@ -134,7 +136,12 @@ class BorangPenanganansRelationManager extends RelationManager
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = Auth::id();
                         return $data;
-                    }),
+                    })
+                    ->successNotification(
+                        FilamentNotification::make()
+                            ->success()
+                            ->title('Borang Penanganan Berhasil Dibuat')
+                    ),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()

@@ -20,6 +20,8 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Get;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification as FilamentNotification;
+use Illuminate\Support\Facades\Notification;
 
 class BorangPemeriksaansRelationManager extends RelationManager
 {
@@ -112,7 +114,13 @@ class BorangPemeriksaansRelationManager extends RelationManager
                         }
                         $data['pemeriksa_info'] = $pemeriksaData;
                         return $data;
-                    }),
+                    })
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Borang Pemeriksaan Berhasil Dibuat')
+
+                    ),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
