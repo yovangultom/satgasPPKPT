@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\ProfileController;
@@ -5,21 +6,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PengaduanPublikController;
 use App\Http\Controllers\PengaduanPdfController;
 use App\Http\Controllers\NotificationController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
-
+use App\Http\Middleware\EnsureUserIsPengguna;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware(['auth', 'verified', function (Request $request, Closure $next) {
-    if (Auth::check() && Auth::user()->hasAnyRole(['admin', 'petugas', 'rektor', 'htl'])) {
-        return redirect()->route('filament.admin.pages.dashboard');
-    }
-    return $next($request);
-}])->group(function () {
+Route::middleware(['auth', 'verified', EnsureUserIsPengguna::class])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -37,8 +30,8 @@ Route::middleware(['auth', 'verified', function (Request $request, Closure $next
     Route::post('/pengaduan/{pengaduan}/pesan', [PengaduanPublikController::class, 'storeMessage'])->name('pengaduan.storeMessage');
 });
 
-
 Route::middleware('auth')->group(function () {
+
     Route::get('/pengaduans/{pengaduan}/pdf', [PengaduanPdfController::class, 'generatePdf'])
         ->name('pengaduan.pdf');
     Route::get('/bap/export/{bap}', [PengaduanPdfController::class, 'exportBapPdf'])->name('bap.export.pdf');
