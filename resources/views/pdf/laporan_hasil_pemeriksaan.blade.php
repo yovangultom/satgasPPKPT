@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="{{ asset('images/Logo PPKPT 2025 Square Black - CROP.png') }}" type="image/png">
     <title>Laporan Hasil Pemeriksaan - {{ $lhp->beritaAcaraPemeriksaan->pihak_diperiksa_nama }}</title>
     <style>
         body {

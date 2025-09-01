@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="{{ asset('images/Logo PPKPT 2025 Square Black - CROP.png') }}" type="image/png">
     <title>Surat Rekomendasi - {{ $suratRekomendasi->id }}</title>
     <style>
         body {
@@ -318,25 +319,8 @@
                 }
             @endphp
 
-            {{-- <p class="paragraph" style="margin-left: 0px; margin-top: 5px;">
-                Sesuai dengan Permendikbudristek Nomor 55 Tahun 2024
-                @foreach ($lhp->pasalPelanggarans as $pasal)
-                    Pasal {{ $pasal->pasal }} Ayat {{ str_replace(['(', ')'], '', $pasal->ayat) }} Butir
-                    ({{ $pasal->butir }})
-                    @if (!$loop->last)
-                        @if ($loop->remaining == 1)
-                        , dan @else, jo.
-                        @endif
-                    @endif
-                @endforeach, maka pelaku dijatuhi sanksi administratif
-                {{ strtolower($suratRekomendasi->rekomendasi_data['jenis_sanksi'] ?? '') }} bagi
-                {{ strtolower($suratRekomendasi->rekomendasi_data['status_pelaku_manual'] ?? '') }}, yaitu berupa:
-                {{ $formatted_sanksi }}.
-            </p> --}}
-
             <p class="paragraph" style="margin-left: 0px; margin-top: 5px;">
                 Sesuai dengan Permendikbudristek Nomor 55 Tahun 2024
-                {{-- PERBAIKAN: Menggunakan $lhp->pasalPelanggarans yang sudah disiapkan di controller --}}
                 @foreach ($lhp->pasalPelanggarans as $pasal)
                     Pasal {{ $pasal->pasal }} Ayat {{ str_replace(['(', ')'], '', $pasal->ayat) }} Butir
                     ({{ $pasal->butir }})

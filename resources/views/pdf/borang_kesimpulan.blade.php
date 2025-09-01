@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <link rel="icon" href="{{ asset('images/Logo PPKPT 2025 Square Black - CROP.png') }}" type="image/png">
     <title>Borang Kesimpulan - {{ $pengaduan->nomor_pengaduan }}</title>
     <style>
         body {
@@ -299,7 +300,7 @@
                 <img src="data:image/{{ $imageType }};base64,{{ $imageData }}" alt="Tanda Tangan"
                     style="height: 60px; margin: 5px 0;">
             @else
-                <div style="height: 70px;"></div> 
+                <div style="height: 70px;"></div>
             @endif
 
             <p><strong><u>{{ $ketuaSatgas->nama ?? 'Nama Ketua Belum Diatur' }}</u></strong></p>
