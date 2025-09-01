@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Tambahkan ini
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAdminOrPetugas
@@ -18,9 +18,8 @@ class RedirectIfAdminOrPetugas
     {
         if (Auth::check()) {
             $user = Auth::user();
-            // Jika user adalah admin atau petugas, redirect mereka ke panel admin
-            if ($user->hasAnyRole(['admin', 'petugas'])) {
-                return redirect()->route('filament.admin.pages.dashboard'); // Redirect ke dashboard Filament
+            if ($user->hasAnyRole(['admin', 'petugas', 'rektor', 'htl'])) {
+                return redirect()->route('filament.admin.pages.dashboard');
             }
         }
 
