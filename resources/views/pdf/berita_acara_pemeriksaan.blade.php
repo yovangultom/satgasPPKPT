@@ -174,7 +174,9 @@
             </tr>
             <tr>
                 <td class="label">Jenis Kejadian</td>
-                <td>: {{ $bap->jenis_kejadian_awal }}</td>
+                <td>:
+                    {{ is_array($bap->jenis_kejadian_awal) ? implode(', ', $bap->jenis_kejadian_awal) : $bap->jenis_kejadian_awal }}
+                </td>
             </tr>
             <tr>
                 <td class="label">Uraian Singkat Kejadian</td>
@@ -244,7 +246,7 @@
                 <img src="data:image/{{ $imageType }};base64,{{ $imageData }}" alt="Tanda Tangan"
                     style="height: 60px; margin: 5px auto;">
             @else
-                <div style="height: 70px;"></div> 
+                <div style="height: 70px;"></div>
             @endif
 
             <p style="font-weight: bold; text-decoration: underline;">

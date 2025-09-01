@@ -318,7 +318,7 @@
                 }
             @endphp
 
-            <p class="paragraph" style="margin-left: 0px; margin-top: 5px;">
+            {{-- <p class="paragraph" style="margin-left: 0px; margin-top: 5px;">
                 Sesuai dengan Permendikbudristek Nomor 55 Tahun 2024
                 @foreach ($lhp->pasalPelanggarans as $pasal)
                     Pasal {{ $pasal->pasal }} Ayat {{ str_replace(['(', ')'], '', $pasal->ayat) }} Butir
@@ -327,6 +327,21 @@
                         @if ($loop->remaining == 1)
                         , dan @else, jo.
                         @endif
+                    @endif
+                @endforeach, maka pelaku dijatuhi sanksi administratif
+                {{ strtolower($suratRekomendasi->rekomendasi_data['jenis_sanksi'] ?? '') }} bagi
+                {{ strtolower($suratRekomendasi->rekomendasi_data['status_pelaku_manual'] ?? '') }}, yaitu berupa:
+                {{ $formatted_sanksi }}.
+            </p> --}}
+
+            <p class="paragraph" style="margin-left: 0px; margin-top: 5px;">
+                Sesuai dengan Permendikbudristek Nomor 55 Tahun 2024
+                {{-- PERBAIKAN: Menggunakan $lhp->pasalPelanggarans yang sudah disiapkan di controller --}}
+                @foreach ($lhp->pasalPelanggarans as $pasal)
+                    Pasal {{ $pasal->pasal }} Ayat {{ str_replace(['(', ')'], '', $pasal->ayat) }} Butir
+                    ({{ $pasal->butir }})
+                    @if (!$loop->last)
+                        ,
                     @endif
                 @endforeach, maka pelaku dijatuhi sanksi administratif
                 {{ strtolower($suratRekomendasi->rekomendasi_data['jenis_sanksi'] ?? '') }} bagi

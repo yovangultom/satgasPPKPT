@@ -53,11 +53,17 @@ class PengaduanPdfController extends Controller
         $lhp->load(['beritaAcaraPemeriksaan', 'user']);
         $pasalPelanggarans = PasalPelanggaran::whereIn('id', $lhp->pasal_pelanggaran_id ?? [])->get();
         $ketuaSatgas = KetuaSatgas::first();
+        $pasalIds = collect($lhp->pelanggaran_data)
+            ->pluck('pasal_pelanggaran_ids')
+            ->flatten()
+            ->unique()
+            ->filter();
 
+        $pasalPelanggarans = PasalPelanggaran::whereIn('id', $pasalIds)->get();
         $pdfData = [
             'lhp' => $lhp,
             'pasalPelanggarans' => $pasalPelanggarans,
-            'ketuaSatgas' => $ketuaSatgas, 
+            'ketuaSatgas' => $ketuaSatgas,
         ];
         $pdf = Pdf::loadView('pdf.laporan_hasil_pemeriksaan', $pdfData);
         $pdf->setPaper('a4', 'portrait');
@@ -70,12 +76,18 @@ class PengaduanPdfController extends Controller
         $suratRekomendasi->load('pengaduan', 'laporanHasilPemeriksaan', 'sanksis');
         $lhp = $suratRekomendasi->laporanHasilPemeriksaan;
 
-        if ($lhp && !empty($lhp->pasal_pelanggaran_id)) {
-            $pasalPelanggaranIds = $lhp->pasal_pelanggaran_id;
-            $lhp->pasalPelanggarans = PasalPelanggaran::whereIn('id', $pasalPelanggaranIds)->get();
+        if ($lhp && !empty($lhp->pelanggaran_data)) {
+            $pasalIds = collect($lhp->pelanggaran_data)
+                ->pluck('pasal_pelanggaran_ids')
+                ->flatten()
+                ->unique()
+                ->filter();
+
+            $lhp->pasalPelanggarans = PasalPelanggaran::whereIn('id', $pasalIds)->get();
         } else {
             $lhp->pasalPelanggarans = collect();
         }
+
 
         $ketuaSatgas = KetuaSatgas::first();
 

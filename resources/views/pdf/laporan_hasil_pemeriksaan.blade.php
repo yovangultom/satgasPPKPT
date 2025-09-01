@@ -174,7 +174,10 @@
             </tr>
             <tr>
                 <td class="label">Dugaan Bentuk Kekerasan</td>
-                <td>: {{ $lhp->beritaAcaraPemeriksaan->jenis_kejadian_awal }}</td>
+                {{-- PERBAIKAN: Menggabungkan array menjadi string agar bisa ditampilkan --}}
+                <td>:
+                    {{ is_array($lhp->beritaAcaraPemeriksaan->jenis_kejadian_awal) ? implode(', ', $lhp->beritaAcaraPemeriksaan->jenis_kejadian_awal) : $lhp->beritaAcaraPemeriksaan->jenis_kejadian_awal }}
+                </td>
             </tr>
             <tr>
                 <td class="label">Ketentuan yang dilanggar</td>
@@ -194,6 +197,7 @@
                     @endif
                 </td>
             </tr>
+
             <tr>
                 <td class="label">Pembuktian dan Analisis Bukti</td>
                 <td>: {{ $lhp->pembuktian_dan_analisis }}</td>

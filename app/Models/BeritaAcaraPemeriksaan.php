@@ -13,7 +13,7 @@ class BeritaAcaraPemeriksaan extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'jenis_kejadian_awal',
+        'jenis_kejadian_awal' => 'array',
         'pihak_diperiksa_tanggal_lahir' => 'date',
         'tanggal_kejadian' => 'date',
         'tanggal_pemeriksaan' => 'date',

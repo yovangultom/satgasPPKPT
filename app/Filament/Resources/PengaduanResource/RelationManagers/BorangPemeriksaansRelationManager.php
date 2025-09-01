@@ -34,9 +34,8 @@ class BorangPemeriksaansRelationManager extends RelationManager
     {
         /** @var Pengaduan $pengaduan */
         $pengaduan = $this->ownerRecord;
-        // BARU
         $petugasOptions = User::whereHas('roles', fn($query) => $query->where('name', 'petugas'))
-            ->whereNotNull('name') // <-- TAMBAHKAN BARIS INI
+            ->whereNotNull('name')
             ->pluck('name', 'id');
         return $form
             ->schema([
@@ -100,7 +99,6 @@ class BorangPemeriksaansRelationManager extends RelationManager
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = Auth::id();
 
-                        // --- LOGIKA YANG DIADOPSI DARI BeritaAcaraPemeriksaansRelationManager ---
                         $pemeriksaData = [];
                         if (!empty($data['pemeriksa_info'])) {
                             $petugasCollection = User::find($data['pemeriksa_info']);
@@ -108,15 +106,11 @@ class BorangPemeriksaansRelationManager extends RelationManager
                                 $pemeriksaData[] = [
                                     'id' => $petugas->id,
                                     'name' => $petugas->name,
-                                    // Pastikan model User Anda memiliki kolom 'tanda_tangan'
                                     'tanda_tangan' => $petugas->tanda_tangan,
                                 ];
                             }
                         }
-                        // Mengganti array ID dengan array data petugas yang lebih lengkap
                         $data['pemeriksa_info'] = $pemeriksaData;
-                        // --- AKHIR DARI LOGIKA ---
-
                         return $data;
                     }),
             ])
@@ -125,7 +119,6 @@ class BorangPemeriksaansRelationManager extends RelationManager
                     ->modalHeading('Borang Pemeriksaan')
                     ->label('Lihat')
                     ->mountUsing(function (Form $form, Model $record) {
-                        // Mengisi data untuk mode view/readonly
                         $data = $record->toArray();
                         $pengaduan = $record->pengaduan;
 
@@ -133,7 +126,6 @@ class BorangPemeriksaansRelationManager extends RelationManager
                         $data['korban_display'] = $pengaduan->korbans->map(fn($k) => ['nama' => $k->nama, 'memiliki_disabilitas' => $k->memiliki_disabilitas ? 'Ya' : 'Tidak'])->toArray();
                         $data['terlapor_display'] = $pengaduan->terlapors->map(fn($t) => ['nama' => $t->nama, 'memiliki_disabilitas' => $t->memiliki_disabilitas ? 'Ya' : 'Tidak'])->toArray();
 
-                        // Menyiapkan data petugas untuk ditampilkan di Select
                         if (is_array($record->pemeriksa_info)) {
                             $data['pemeriksa_info'] = collect($record->pemeriksa_info)->pluck('id')->all();
                         } else {

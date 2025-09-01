@@ -19,6 +19,10 @@ use Filament\Forms\Get;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Set;
+
 
 class LaporanHasilPemeriksaansRelationManager extends RelationManager
 {
@@ -54,6 +58,13 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
                             $set('pihak_diperiksa_jenis_kelamin', $bap->pihak_diperiksa_jenis_kelamin);
                             $set('pihak_diperiksa_alamat', $bap->pihak_diperiksa_alamat);
                         }
+                        $pelanggaranData = [];
+                        if (!empty($bap->jenis_kejadian_awal)) {
+                            foreach ($bap->jenis_kejadian_awal as $jenis) {
+                                $pelanggaranData[] = ['jenis_kejadian' => $jenis, 'pasal_pelanggaran_ids' => []];
+                            }
+                        }
+                        $set('pelanggaran_data', $pelanggaranData);
                     }),
 
                 Fieldset::make('Data Pihak Terperiksa (Otomatis dari BAP)')
@@ -78,17 +89,28 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
 
                 Fieldset::make('Hasil Pemeriksaan')
                     ->schema([
-                        TextInput::make('jenis_kekerasan_display')->label('Jenis Kekerasan')
-                            ->disabled()
-                            ->dehydrated(false),
-                        Select::make('pasal_pelanggaran_id')
-                            ->label('Ketentuan yang Dilanggar')
-                            ->multiple()
-                            ->options(
-                                PasalPelanggaran::where('jenis_kekerasan', $jenisKekerasan)->pluck('keterangan', 'id')
-                            )
-                            ->searchable()
-                            ->required(),
+                        Repeater::make('pelanggaran_data')
+                            ->label('Pelanggaran yang Terbukti')
+                            ->schema([
+                                TextInput::make('jenis_kejadian')
+                                    ->label('Jenis Kejadian')
+                                    ->required(),
+                                Select::make('pasal_pelanggaran_ids')
+                                    ->label('Ketentuan yang Dilanggar')
+                                    ->multiple()
+                                    ->options(function (Get $get) {
+                                        $jenisKekerasan = $get('jenis_kejadian');
+                                        if (empty($jenisKekerasan)) {
+                                            return [];
+                                        }
+                                        return PasalPelanggaran::where('jenis_kekerasan', $jenisKekerasan)->pluck('keterangan', 'id');
+                                    })
+                                    ->searchable()
+                                    ->required(),
+                            ])
+                            ->columnSpanFull()
+                            ->addable(false)
+                            ->deletable(false),
                         Textarea::make('pembuktian_dan_analisis')->rows(5)->columnSpanFull()->required(),
                         Textarea::make('ringkasan_pemeriksaan')->rows(5)->columnSpanFull()->required(),
                         Textarea::make('pendampingan_diberikan')->label('Pendampingan, pelindungan, dan/atau pemulihan yang telah diberikan')->rows(5)->columnSpanFull()->required(),
@@ -100,7 +122,6 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
                     ])
             ]);
     }
-
     public function table(Table $table): Table
     {
         return $table
@@ -119,11 +140,6 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
                     ->modalSubmitActionLabel('Save')
                     ->authorize(true)
                     ->closeModalByClickingAway(false)
-                    ->mountUsing(function (Form $form) {
-                        $form->fill([
-                            'jenis_kekerasan_display' => $this->ownerRecord->jenis_kejadian,
-                        ]);
-                    })
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = Auth::id();
                         return $data;
@@ -140,11 +156,19 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
                     ),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
+                Tables\Actions\Action::make('view')
                     ->label('Lihat')
+                    ->icon('heroicon-o-eye')
+                    ->color('gray')
                     ->modalHeading('Laporan Hasil Pemeriksaan')
-                    ->closeModalByClickingAway(false)
-                    ->fillForm(fn(LaporanHasilPemeriksaan $record): array => $this->fillInitialData($record)),
+                    ->form(fn(Form $form) => $this->form($form))
+                    ->mountUsing(function (Form $form, Model $record) {
+                        $form->fill($this->fillInitialData($record));
+                    })
+                    ->disabledForm(true)
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup')
+                    ->closeModalByClickingAway(false),
                 Tables\Actions\Action::make('export_pdf')
                     ->label('PDF')
                     ->icon('heroicon-o-document-arrow-down')
@@ -154,6 +178,7 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
                     })
                     ->openUrlInNewTab(),
                 Tables\Actions\DeleteAction::make()
+                    ->authorize(true)
                     ->label('Hapus'),
             ]);
     }
@@ -163,7 +188,7 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
         $formData = $record->toArray();
         $pengaduan = $this->ownerRecord;
 
-        $formData['jenis_kekerasan_display'] = $pengaduan->jenis_kejadian;
+
 
         if ($record->berita_acara_pemeriksaan_id) {
             $bap = $pengaduan->beritaAcaraPemeriksaans()->find($record->berita_acara_pemeriksaan_id);
