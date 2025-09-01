@@ -39,6 +39,7 @@ use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Select;
 use PhpParser\Node\Stmt\Label;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PengaduanResource extends Resource
 {
@@ -169,7 +170,10 @@ class PengaduanResource extends Resource
                     ]),
                 Section::make('Lampiran dan Bukti')
                     ->schema([
-                        TextEntry::make('bukti_pendukung')->label('File Bukti Pendukung (ZIP/RAR)')->placeholder('Tidak ada file diunggah.'),
+                        TextEntry::make('bukti_pendukung')
+                            ->label('File Bukti Pendukung (ZIP/RAR)')
+                            ->color('primary')
+                            ->url(fn($record): ?string => $record->bukti_pendukung ? Storage::disk('public')->url($record->bukti_pendukung) : null, true),
                         TextEntry::make('url_bukti_tambahan')->label('URL Bukti Tambahan')->url(fn($state) => $state)->openUrlInNewTab()->placeholder('Tidak ada URL.'),
                     ]),
                 Section::make('Persetujuan dan Tanda Tangan')

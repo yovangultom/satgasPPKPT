@@ -16,6 +16,7 @@
                                 </ul>
                             </div>
                         @endif
+
                         <div class="">
                             <h1 class="text-xl font-bold leading-7 text-black">Form Laporan Pengaduan</h1>
                         </div>
@@ -38,7 +39,7 @@
                                 <div class="sm:col-span-3">
                                     <label for="pelapor_telepon"
                                         class="block text-sm font-medium leading-6 text-gray-900">Nomor Telepon</label>
-                                    <input type="tel" id="pelapor_telepon" name="pelapor[nomor_telepon]"
+                                    <input type="tel" id="pelapor_telepon" name="pelapor[nomor_telepon]" required
                                         class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 </div>
                                 <div class="sm:col-span-3 relative z-30">
@@ -105,7 +106,7 @@
                                             Korban</label>
                                         <input type="tel" :id="'korban_telepon_' + index"
                                             :name="'korbans[' + index + '][nomor_telepon]'"
-                                            x-model="korban.nomor_telepon"
+                                            x-model="korban.nomor_telepon" required
                                             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     </div>
                                     <div class="sm:col-span-3">
@@ -114,7 +115,7 @@
                                             Kelamin</label>
                                         <select :id="'korban_jenis_kelamin_' + index"
                                             :name="'korbans[' + index + '][jenis_kelamin]'"
-                                            x-model="korban.jenis_kelamin"
+                                            x-model="korban.jenis_kelamin" required
                                             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                             <option>Laki-laki</option>
                                             <option>Perempuan</option>
@@ -125,13 +126,14 @@
                                             class="block text-sm font-medium leading-6 text-gray-900">Domisili</label>
                                         <input type="text" :id="'korban_domisili_' + index"
                                             :name="'korbans[' + index + '][domisili]'" x-model="korban.domisili"
+                                            required
                                             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     </div>
                                     <div class="col-span-full">
                                         <label :for="'korban_status_' + index"
                                             class="block text-sm font-medium leading-6 text-gray-900">Status</label>
                                         <select :id="'korban_status_' + index"
-                                            :name="'korbans[' + index + '][status]'" x-model="korban.status"
+                                            :name="'korbans[' + index + '][status]'" x-model="korban.status" required
                                             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                             <option>Mahasiswa</option>
                                             <option>Dosen</option>
@@ -165,7 +167,7 @@
                                             class="block text-sm font-medium leading-6 text-gray-900"
                                             x-text="'Nama Lengkap Terlapor ' + (index + 1)"></label>
                                         <input type="text" :id="'terlapor_nama_' + index"
-                                            :name="'terlapors[' + index + '][nama]'" x-model="terlapor.nama"
+                                            :name="'terlapors[' + index + '][nama]'" x-model="terlapor.nama" required
                                             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     </div>
                                     <div class="sm:col-span-3">
@@ -174,7 +176,7 @@
                                             Telepon</label>
                                         <input type="tel" :id="'terlapor_nomor_telepon_' + index"
                                             :name="'terlapors[' + index + '][nomor_telepon]'"
-                                            x-model="terlapor.nomor_telepon"
+                                            x-model="terlapor.nomor_telepon" required
                                             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     </div>
                                     <div class="sm:col-span-3 relative z-30">
@@ -183,7 +185,7 @@
                                             Kelamin</label>
                                         <select :id="'terlapor_jenis_kelamin_' + index"
                                             :name="'terlapors[' + index + '][jenis_kelamin]'"
-                                            x-model="terlapor.jenis_kelamin"
+                                            x-model="terlapor.jenis_kelamin" required
                                             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                             <option>Laki-laki</option>
                                             <option>Perempuan</option>
@@ -194,6 +196,7 @@
                                             class="block text-sm font-medium leading-6 text-gray-900">Domisili</label>
                                         <input type="text" :id="'terlapor_domisili_' + index"
                                             :name="'terlapors[' + index + '][domisili]'" x-model="terlapor.domisili"
+                                            required
                                             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     </div>
                                     <div class="col-span-full">
@@ -201,6 +204,7 @@
                                             class="block text-sm font-medium leading-6 text-gray-900">Status</label>
                                         <select :id="'terlapor_status_' + index"
                                             :name="'terlapors[' + index + '][status]'" x-model="terlapor.status"
+                                            required
                                             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                             <option>Mahasiswa</option>
                                             <option>Dosen</option>
@@ -272,8 +276,14 @@
                                         class="block text-sm font-medium leading-6 text-gray-900">Unggah Bukti
                                         Pendukung
                                         (.zip/.rar, maks 10MB)</label>
-                                    <input type="file" id="bukti_pendukung" name="bukti_pendukung"
+                                    <input type="file" id="bukti_pendukung" name="bukti_pendukung" required
+                                        accept=".zip,.rar" @change="validateFileSize($event)"
                                         class="block w-full text-sm text-gray-900 rounded-md  p-1.5 border border-gray-300  cursor-pointer bg-gray-50 focus:outline-none">
+                                    <x-input-error :messages="$errors->get('bukti_pendukung')" class="mt-2" />
+                                    <template x-if="fileError">
+                                        <p x-text="fileError" class="text-sm text-red-600 mt-2"></p>
+                                    </template>
+
                                 </div>
                                 <div class="col-span-full">
                                     <label for="url_bukti_tambahan"
@@ -425,7 +435,7 @@
                                 <div class="mt-2 w-full border border-gray-300 rounded-lg touch-none">
                                     <canvas x-ref="signatureCanvas" class="w-full h-48 rounded-lg"></canvas>
                                 </div>
-                                <input type="hidden" name="tanda_tangan_pelapor" x-model="signatureData">
+                                <input type="hidden" name="tanda_tangan_pelapor" x-model="signatureData" required>
                                 <div class="mt-2 flex items-center justify-end">
                                     <button type="button" @click="clearSignature"
                                         class="text-sm font-semibold text-indigo-600 hover:text-indigo-500">Bersihkan</button>
@@ -436,9 +446,8 @@
                             </div>
                         </div>
 
-                        <!-- ===== TOMBOL KIRIM ===== -->
                         <div class=" flex items-center justify-end gap-x-6">
-                            <button type="submit"
+                            <button type="button" @click="submitForm"
                                 class="rounded-md bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                 Kirim Laporan
                             </button>
@@ -467,6 +476,8 @@
                     signaturePad: null,
                     signatureData: '',
                     signatureError: '',
+                    fileError: '',
+
 
                     init() {
                         this.$watch('peranPelapor', value => {
@@ -496,10 +507,30 @@
                     clearSignature() {
                         if (this.signaturePad) this.signaturePad.clear();
                     },
+                    validateFileSize(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            // 10 MB dalam bytes (10 * 1024 * 1024)
+                            const maxSize = 10485760;
+                            if (file.size > maxSize) {
+                                this.fileError = 'Ukuran file tidak boleh melebihi 10MB.';
+                                event.target.value = null; // Menghapus file yang terlalu besar
+                            } else {
+                                this.fileError = '';
+                            }
+                        }
+                    },
 
                     submitForm() {
+
+                        this.validateFileSize({
+                            target: document.getElementById('bukti_pendukung')
+                        });
                         if (this.signaturePad.isEmpty()) {
                             this.signatureError = 'Tanda tangan wajib diisi.';
+                            return;
+                        }
+                        if (this.fileError) {
                             return;
                         }
 
