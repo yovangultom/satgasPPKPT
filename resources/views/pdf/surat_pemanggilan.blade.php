@@ -59,13 +59,13 @@
 
         .judul-surat-wrapper {
             text-align: center;
-            margin-top: 30px;
-            margin-bottom: 30px;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
 
         .rahasia {
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .judul-surat {
@@ -235,8 +235,8 @@
             </table>
         </div>
         <p class="">Demikian untuk dilaksanakan sebagaimana mestinya.</p>
-        <div style="margin-top: 40px; width: 40%; float: right; text-align: left; page-break-inside: avoid;">
-            <p>Bandar Lampung, {{ now()->translatedFormat('j F Y') }}</p>
+        <div style="margin-top: 20px; width: 40%; float: right; text-align: center; page-break-inside: avoid;">
+            <p style="margin-bottom: 0px;">Bandar Lampung, {{ now()->translatedFormat('j F Y') }}</p>
             <p>Ketua Satgas PPKPT Itera,</p>
 
             @if (
@@ -254,7 +254,7 @@
                 <br><br><br><br>
             @endif
 
-            <p style="font-weight: bold; text-decoration: underline; margin-top: 5px; margin-bottom: 0;">
+            <p style="font-weight: bold; text-decoration: underline;">
                 {{ $ketuaSatgas->nama ?? 'Nama Ketua Belum Diatur' }}
             </p>
             <p style="margin-top: 0;">
