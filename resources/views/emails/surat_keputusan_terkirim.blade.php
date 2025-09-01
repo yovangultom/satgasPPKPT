@@ -7,7 +7,8 @@
 
 <body style="font-family: sans-serif; color: #333;">
     <div style="text-align: center; margin-bottom: 20px;">
-        <img src="{{ asset('images/Logo PPKPT 2025 Square Black - CROP.png') }}" alt="Logo PPKPT" class="w-auto h-24">
+        <img src="{{ url('images/Logo PPKPT 2025 Square Black - CROP.png') }}" alt="Logo PPKPT"
+            style="width: auto; max-width: 200px; height: auto; max-height: 75px; border: 0;">
     </div>
     <h2>Penerbitan Surat Keputusan (SK)</h2>
     <p>Yth. Bapak/Ibu,</p>
