@@ -123,6 +123,9 @@
                                                 :name="'korbans[' + index + '][nomor_telepon]'"
                                                 x-model="korban.nomor_telepon" required
                                                 class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            <p class="mt-1 text-xs text-gray-500">Isi dengan tanda strip (-) jika tidak
+                                                diketahui.</p>
+
                                         </div>
                                         <div class="sm:col-span-3">
                                             <label :for="'korban_jenis_kelamin_' + index"
@@ -143,6 +146,9 @@
                                                 :name="'korbans[' + index + '][domisili]'" x-model="korban.domisili"
                                                 required
                                                 class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            <p class="mt-1 text-xs text-gray-500">Isi dengan tanda strip (-) jika tidak
+                                                diketahui.</p>
+
                                         </div>
                                         <div class="col-span-3">
                                             <label :for="'korban_status_' + index"
@@ -210,6 +216,9 @@
                                             :name="'terlapors[' + index + '][nomor_telepon]'"
                                             x-model="terlapor.nomor_telepon" required
                                             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <p class="mt-1 text-xs text-gray-500">Isi dengan tanda strip (-) jika tidak
+                                            diketahui.</p>
+
                                     </div>
                                     <div class="sm:col-span-3 relative z-30">
                                         <label :for="'terlapor_jenis_kelamin_' + index"
@@ -230,6 +239,8 @@
                                             :name="'terlapors[' + index + '][domisili]'" x-model="terlapor.domisili"
                                             required
                                             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <p class="mt-1 text-xs text-gray-500">Isi dengan tanda strip (-) jika tidak
+                                            diketahui.</p>
                                     </div>
                                     <div class="col-span-3">
                                         <label :for="'terlapor_status_' + index"
