@@ -159,6 +159,15 @@ class PengaduanResource extends Resource
                     ->schema([
                         TextEntry::make('jenis_kejadian'),
                         TextEntry::make('tanggal_kejadian')->date('d F Y'),
+                        TextEntry::make('terjadi_saat_tridharma')
+                            ->label('Terjadi saat Pelaksanaan Tri Dharma?')
+                            ->formatStateUsing(fn($state): string => $state ? 'Ya' : 'Tidak'),
+                        TextEntry::make('jenis_tridharma')
+                            ->label('Jenis Tri Dharma')
+                            ->visible(fn($record) => $record->terjadi_saat_tridharma),
+                        TextEntry::make('terjadi_di_wilayah_kampus')
+                            ->label('Terjadi di Wilayah Kampus?')
+                            ->formatStateUsing(fn($state): string => $state ? 'Ya' : 'Tidak'),
                         TextEntry::make('lokasi_kejadian')->columnSpanFull(),
                         TextEntry::make('deskripsi_pengaduan')->columnSpanFull()->extraAttributes(['class' => 'text-justify']),
                     ]),

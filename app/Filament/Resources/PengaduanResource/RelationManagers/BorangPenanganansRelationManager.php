@@ -30,6 +30,10 @@ class BorangPenanganansRelationManager extends RelationManager
     {
         return Auth::user()->hasRole('admin');
     }
+    public function canCreate(): bool
+    {
+        return true;
+    }
     public function form(Form $form): Form
     {
         return $form

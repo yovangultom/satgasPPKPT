@@ -75,21 +75,30 @@ class PengaduanPublikController extends Controller
             'pelapor.domisili' => 'required|string|max:255',
             'pelapor.status' => 'required|string',
             'pelapor.peran' => 'required|string|in:Korban,Saksi',
-            'korbans' => 'nullable|array',
+            'pelapor.memiliki_disabilitas' => 'required|boolean',
+
+            'korbans' => 'required_if:pelapor.peran,Saksi|array|min:1',
             'korbans.*.nama' => 'required_if:pelapor.peran,Saksi|string|max:255',
             'korbans.*.nomor_telepon' => 'nullable|string|max:255',
             'korbans.*.jenis_kelamin' => 'required_if:pelapor.peran,Saksi|string',
             'korbans.*.domisili' => 'required_if:pelapor.peran,Saksi|string|max:255',
             'korbans.*.status' => 'required_if:pelapor.peran,Saksi|string',
+            'korbans.*.memiliki_disabilitas' => 'required_if:pelapor.peran,Saksi|boolean',
+
             'terlapors' => 'nullable|array',
             'terlapors.*.nama' => 'nullable|string|max:255',
             'terlapors.*.nomor_telepon' => 'nullable|string|max:255',
             'terlapors.*.jenis_kelamin' => 'nullable|string',
             'terlapors.*.domisili' => 'nullable|string|max:255',
             'terlapors.*.status' => 'nullable|string',
+            'terlapors.*.memiliki_disabilitas' => 'nullable|boolean',
+
             'jenis_kejadian' => 'required|string|max:255',
             'tanggal_kejadian' => 'required|date',
             'lokasi_kejadian' => 'required|string|max:255',
+            'terjadi_saat_tridharma' => 'required|boolean',
+            'terjadi_di_wilayah_kampus' => 'required|boolean',
+            'jenis_tridharma' => 'required_if:terjadi_saat_tridharma,1|string|in:Pendidikan,Penelitian,Pengabdian',
             'deskripsi_pengaduan' => 'required|string',
             'alasan_pengaduan' => 'nullable|array',
             'identifikasi_kebutuhan_korban' => 'nullable|array',
@@ -108,7 +117,7 @@ class PengaduanPublikController extends Controller
                     'jenis_kelamin' => $validated['pelapor']['jenis_kelamin'],
                     'domisili' => $validated['pelapor']['domisili'],
                     'status' => $validated['pelapor']['status'],
-                    'memiliki_disabilitas' => $request->has('pelapor.memiliki_disabilitas'),
+                    'memiliki_disabilitas' => $validated['pelapor']['memiliki_disabilitas'],
                 ]);
 
                 $pengaduan = Pengaduan::create([
@@ -117,6 +126,9 @@ class PengaduanPublikController extends Controller
                     'jenis_kejadian' => $validated['jenis_kejadian'],
                     'tanggal_kejadian' => $validated['tanggal_kejadian'],
                     'lokasi_kejadian' => $validated['lokasi_kejadian'],
+                    'terjadi_saat_tridharma' => $validated['terjadi_saat_tridharma'],
+                    'terjadi_di_wilayah_kampus' => $validated['terjadi_di_wilayah_kampus'],
+                    'jenis_tridharma' => $validated['jenis_tridharma'] ?? null,
                     'deskripsi_pengaduan' => $validated['deskripsi_pengaduan'],
                     'alasan_pengaduan' => $validated['alasan_pengaduan'] ?? [],
                     'identifikasi_kebutuhan_korban' => $validated['identifikasi_kebutuhan_korban'] ?? [],
@@ -135,7 +147,6 @@ class PengaduanPublikController extends Controller
                     $pengaduan->korbans()->attach($korban->id);
                 } elseif ($validated['pelapor']['peran'] === 'Saksi' && !empty($validated['korbans'])) {
                     foreach ($validated['korbans'] as $index => $dataKorban) {
-                        $dataKorban['memiliki_disabilitas'] = $request->has("korbans.{$index}.memiliki_disabilitas");
                         $korban = Korban::create($dataKorban);
                         $pengaduan->korbans()->attach($korban->id);
                     }
@@ -143,7 +154,7 @@ class PengaduanPublikController extends Controller
                 if (!empty($validated['terlapors'])) {
                     foreach ($validated['terlapors'] as $index => $dataTerlapor) {
                         if (!empty($dataTerlapor['nama'])) {
-                            $dataTerlapor['memiliki_disabilitas'] = $request->has("terlapors.{$index}.memiliki_disabilitas");
+                            $dataTerlapor['memiliki_disabilitas'] = $dataTerlapor['memiliki_disabilitas'] ?? false;
                             $terlapor = Terlapor::create($dataTerlapor);
                             $pengaduan->terlapors()->attach($terlapor->id);
                         }
@@ -151,8 +162,8 @@ class PengaduanPublikController extends Controller
                 }
             });
         } catch (\Exception $e) {
-            Log::error('Gagal menyimpan pengaduan: ' . $e->getMessage());
-            Alert::danger('Gagal', 'Laporan gagal diajukan.');
+            Log::error('Gagal menyimpan pengaduan: ' . $e->getMessage() . ' - Line: ' . $e->getLine());
+            Alert::error('Gagal', 'Laporan gagal diajukan. Silakan coba lagi atau hubungi administrator.');
             return back()->withInput();
         }
         Alert::success('Berhasil', 'Laporan berhasil diajukan.');

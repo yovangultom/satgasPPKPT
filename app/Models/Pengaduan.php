@@ -26,6 +26,9 @@ class Pengaduan extends Model
         'jenis_kejadian',
         'tanggal_kejadian',
         'lokasi_kejadian',
+        'terjadi_saat_tridharma',
+        'jenis_tridharma',
+        'terjadi_di_wilayah_kampus',
         'deskripsi_pengaduan',
         'alasan_pengaduan',
         'identifikasi_kebutuhan_korban',
@@ -45,6 +48,8 @@ class Pengaduan extends Model
     protected $casts = [
         'tanggal_pelaporan' => 'datetime',
         'tanggal_kejadian' => 'date',
+        'terjadi_saat_tridharma' => 'boolean',
+        'terjadi_di_wilayah_kampus' => 'boolean',
         'alasan_pengaduan' => 'array',
         'identifikasi_kebutuhan_korban' => 'array',
 

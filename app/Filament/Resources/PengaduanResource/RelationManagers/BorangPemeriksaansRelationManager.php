@@ -116,7 +116,7 @@ class BorangPemeriksaansRelationManager extends RelationManager
                         return $data;
                     })
                     ->successNotification(
-                        Notification::make()
+                        FilamentNotification::make() 
                             ->success()
                             ->title('Borang Pemeriksaan Berhasil Dibuat')
 

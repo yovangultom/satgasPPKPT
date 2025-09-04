@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pengaduan;
 use Filament\Notifications\Notification;
-use Filament\Actions\Action; // <-- Import Action untuk modal
+use Filament\Actions\Action;
 
 class BeritaAcaraPemeriksaansRelationManager extends RelationManager
 {
@@ -143,7 +143,9 @@ class BeritaAcaraPemeriksaansRelationManager extends RelationManager
                     ->mountUsing(function (Form $form) {
                         $pengaduan = $this->getOwnerRecord();
                         $form->fill([
-                            'jenis_kejadian_awal' => [$pengaduan->jenis_kejadian]
+                            'jenis_kejadian_awal' => [$pengaduan->jenis_kejadian],
+                            'uraian_singkat_kejadian' => $pengaduan->deskripsi_pengaduan
+
                         ]);
                     })
                     ->mutateFormDataUsing(function (array $data): array {
