@@ -12,23 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('surat_rekomendasis', function (Blueprint $table) {
-            $table->string('status_rektor')->default('Menunggu Persetujuan')->after('tembusan');
-            $table->text('komentar_rektor')->nullable()->after('status_rektor');
-            $table->timestamp('tanggal_respon_rektor')->nullable()->after('komentar_rektor');
+            $table->string('file_gabungan_path')->nullable()->after('komentar_rektor');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('surat_rekomendasis', function (Blueprint $table) {
-            $table->dropColumn([
-                'status_rektor',
-                'komentar_rektor',
-                'tanggal_respon_rektor',
-            ]);
+            $table->dropColumn('file_gabungan_path');
         });
     }
 };

@@ -67,12 +67,18 @@ class SuratKeputusanResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('lihat_rekomendasi')
                     ->label('Lihat')
-                    ->modalHeading('Surat Rekomendasi')
+                    ->modalHeading('Dokumen Gabungan Surat Rekomendasi')
                     ->icon('heroicon-o-eye')
-                    ->modalContent(fn(SuratRekomendasi $record): \Illuminate\Contracts\View\View => view(
-                        'filament.resources.pdfviewer.pages.pdf-viewer',
-                        ['pdfUrl' => route('surat_rekomendasi.export-pdf', $record)]
-                    ))
+                    ->modalContent(function (SuratRekomendasi $record): \Illuminate\Contracts\View\View {
+                        $pdfUrl = $record->file_gabungan_path
+                            ? Storage::disk('public')->url($record->file_gabungan_path)
+                            : null;
+
+                        return view(
+                            'filament.resources.pdfviewer.pages.pdf-viewer',
+                            ['pdfUrl' => $pdfUrl]
+                        );
+                    })
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Tutup')
                     ->closeModalByClickingAway(false),

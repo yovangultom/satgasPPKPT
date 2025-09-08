@@ -10,10 +10,11 @@ class BorangPenanganan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['pengaduan_id', 'user_id', 'deskripsi_pengaduan', 'pihak_yang_dihubungi', 'kerja_sama'];
+    protected $fillable = ['pengaduan_id', 'user_id', 'deskripsi_pengaduan', 'pihak_yang_dihubungi', 'kerja_sama', 'pdf_path'];
 
     protected $casts = [
         'pihak_yang_dihubungi' => 'array',
+        'pdf_path' => 'string',
     ];
 
     public function pengaduan(): BelongsTo

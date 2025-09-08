@@ -22,6 +22,8 @@ use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Set;
+use App\Notifications\PengaduanStatusUpdated;
+use Illuminate\Support\Facades\Log;
 
 
 class LaporanHasilPemeriksaansRelationManager extends RelationManager
@@ -127,10 +129,11 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
         return $table
             ->recordTitle('Laporan Hasil Pemeriksaan')
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('beritaAcaraPemeriksaan.pihak_diperiksa_nama')->label('BAP Untuk'),
                 Tables\Columns\TextColumn::make('status_terbukti')->badge()->color(fn($state) => $state === 'terbukti' ? 'success' : 'danger'),
                 Tables\Columns\TextColumn::make('user.name')->label('Dibuat oleh'),
+                Tables\Columns\TextColumn::make('created_at')->label('Tanggal Dibuat')->dateTime(),
+
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
@@ -147,12 +150,25 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
                         /** @var \App\Models\Pengaduan $pengaduan */
                         $pengaduan = $this->getOwnerRecord();
                         $pengaduan->update(['status_pengaduan' => 'Penyusunan Kesimpulan dan Rekomendasi']);
+
+                        // Muat ulang record untuk mendapatkan status terbaru
+                        $pengaduan->refresh();
+
+                        $user = $pengaduan->user;
+                        if ($user) {
+                            Log::info("Mempersiapkan notifikasi perubahan status (Penyusunan Kesimpulan) untuk User ID: {$user->id}, Email: {$user->email}");
+                            $user->notify(new PengaduanStatusUpdated($pengaduan));
+                            Log::info("Notifikasi untuk User ID: {$user->id} berhasil di-dispatch ke queue.");
+                        } else {
+                            Log::warning("Gagal mengirim notifikasi status (Penyusunan Kesimpulan): User tidak ditemukan untuk Pengaduan ID: {$pengaduan->id}");
+                        }
                     })
                     ->successNotification(
                         Notification::make()
                             ->success()
                             ->title('LHP Berhasil Dibuat')
-                            ->body('Status pengaduan telah diperbarui menjadi Penyusunan Kesimpulan dan Rekomendasi.')
+                            // --- Pesan notifikasi diperbarui ---
+                            ->body('Status pengaduan telah diperbarui dan notifikasi telah dikirim ke pengguna.')
                     ),
             ])
             ->actions([

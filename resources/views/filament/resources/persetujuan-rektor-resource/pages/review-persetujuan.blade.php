@@ -11,9 +11,22 @@
                 <div class="border-t border-gray-200 dark:border-gray-700 p-2">
                     <div style="resize: vertical; overflow: auto; min-height: 50vh; max-height: 95vh; height: 75vh;"
                         class="rounded-lg border dark:border-gray-600">
-                        <iframe src="{{ route('surat_rekomendasi.export-pdf', ['suratRekomendasi' => $record]) }}"
+                        {{-- <iframe src="{{ route('surat_rekomendasi.export-pdf', ['suratRekomendasi' => $record]) }}"
                             class="w-full h-full" frameborder="0">
-                        </iframe>
+                        </iframe> --}}
+                        @if ($record->file_gabungan_path)
+                            <iframe src="{{ Storage::disk('public')->url($record->file_gabungan_path) }}"
+                                class="w-full h-full" frameborder="0">
+                            </iframe>
+                        @else
+                            <div class="flex items-center justify-center h-full text-gray-500">
+                                <div class="text-center">
+                                    <x-filament::loading-indicator class="h-8 w-8 mx-auto mb-4" />
+                                    <p>PDF sedang diproses...</p>
+                                    <p class="text-xs mt-1">Silakan refresh halaman dalam beberapa saat.</p>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

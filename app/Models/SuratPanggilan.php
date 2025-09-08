@@ -24,13 +24,14 @@ class SuratPanggilan extends Model
         'semester',
         'program_studi',
         'nip',
-        'fakultas_unit_kerja',
+        'fakultas',
+        'asal_instansi',
         'info_tambahan',
         'tanggal_panggilan',
         'waktu_panggilan',
         'tempat_panggilan',
-        'file_path',
         'file_name',
+        'pdf_path',
     ];
 
     /**

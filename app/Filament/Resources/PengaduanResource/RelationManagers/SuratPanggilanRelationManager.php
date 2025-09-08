@@ -29,7 +29,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use App\Models\KetuaSatgas;
 use App\Http\Controllers\PengaduanPdfController;
-
+use App\Notifications\PengaduanStatusUpdated;
+use Illuminate\Support\Facades\Log;
 
 class SuratPanggilanRelationManager extends RelationManager
 {
@@ -56,10 +57,10 @@ class SuratPanggilanRelationManager extends RelationManager
                     ->label('Peran')
                     ->badge(),
                 Tables\Columns\TextColumn::make('tanggal_panggilan')
-                    ->label('Tanggal')
+                    ->label('Tanggal Pemanggilan')
                     ->date(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Dibuat Pada')
+                    ->label('Tanggal Dibuat')
                     ->dateTime(),
             ])
             ->filters([
@@ -135,13 +136,23 @@ class SuratPanggilanRelationManager extends RelationManager
                         } else {
                             $peranText = ucfirst($modelType);
                         }
+                        $data['fakultas'] = $data['fakultas_mhs'] ?? $data['fakultas_dosen'] ?? null;
                         $controller->generateSuratPanggilan($record, $pihak, $status, $peranText, $data);
 
                         $record->update(['status_pengaduan' => 'Verifikasi']);
+                        $record->refresh();
 
+                        $user = $record->user;
+                        if ($user) {
+                            Log::info("Mempersiapkan notifikasi perubahan status (Verifikasi) untuk User ID: {$user->id}, Email: {$user->email}");
+                            $user->notify(new PengaduanStatusUpdated($record));
+                            Log::info("Notifikasi untuk User ID: {$user->id} berhasil di-dispatch ke queue.");
+                        } else {
+                            Log::warning("Gagal mengirim notifikasi status (Verifikasi): User tidak ditemukan untuk Pengaduan ID: {$record->id}");
+                        }
                         Notification::make()
                             ->title('Surat Panggilan Berhasil Dibuat')
-                            ->body('Data surat telah disimpan dan file siap diunduh.')
+                            ->body('Status pengaduan telah diperbarui menjadi "Verifikasi" dan notifikasi telah dikirim ke pengguna.')
                             ->success()
                             ->send();
                     }),
@@ -149,10 +160,11 @@ class SuratPanggilanRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\Action::make('download')
                     ->label('PDF')
-                    ->icon('heroicon-o-document')
+                    ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
-                    ->url(fn($record) => Storage::disk('public')->url($record->file_path), shouldOpenInNewTab: true)
-                    ->visible(fn($record) => $record->file_path && Storage::disk('public')->exists($record->file_path)),
+                    ->authorize(true)
+                    ->url(fn($record) => Storage::disk('public')->url($record->pdf_path), shouldOpenInNewTab: true)
+                    ->visible(fn($record) => $record->pdf_path && Storage::disk('public')->exists($record->pdf_path)),
                 Tables\Actions\DeleteAction::make()
                     ->label('Hapus')
                     ->authorize(true),

@@ -20,6 +20,7 @@ class BeritaAcaraPemeriksaan extends Model
         'waktu_pemeriksaan' => 'datetime:H:i',
         'anggota_satgas_ids' => 'array',
         'tanda_tangan_terperiksa',
+        'pdf_path',
     ];
 
     public function pengaduan(): BelongsTo

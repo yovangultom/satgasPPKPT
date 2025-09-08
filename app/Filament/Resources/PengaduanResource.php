@@ -40,6 +40,7 @@ use Filament\Forms\Components\Select;
 use PhpParser\Node\Stmt\Label;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class PengaduanResource extends Resource
 {
@@ -195,6 +196,7 @@ class PengaduanResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Pengaduan::query()->with('user'))
             ->columns([
                 Tables\Columns\TextColumn::make('nomor_pengaduan')->label('Nomor Pengaduan')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('jenis_kejadian')->label('Judul/Jenis Kejadian')->limit(40)->searchable(),
@@ -216,7 +218,6 @@ class PengaduanResource extends Resource
                 Tables\Actions\ViewAction::make()->label('View'),
                 TableAction::make('updateStatus')
                     ->label('Edit Status')
-                    ->size(ActionSize::Large)
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning')
                     ->fillForm(fn(Pengaduan $record): array => ['status_pengaduan' => $record->status_pengaduan])
@@ -250,7 +251,11 @@ class PengaduanResource extends Resource
 
                         $user = $record->user;
                         if ($user) {
+                            Log::info("Mempersiapkan notifikasi untuk User ID: {$user->id}, Email: {$user->email}");
                             $user->notify(new PengaduanStatusUpdated($record));
+                            Log::info("Notifikasi untuk User ID: {$user->id} berhasil di-dispatch ke queue.");
+                        } else {
+                            Log::warning("Gagal mengirim notifikasi: User tidak ditemukan untuk Pengaduan ID: {$record->id}");
                         }
                     })
                     ->successNotification(Notification::make()->success()->title('Status Diperbarui')->body('Status pengaduan telah berhasil diperbarui dan notifikasi telah dikirim ke pengguna.')),

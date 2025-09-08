@@ -14,10 +14,8 @@ return new class extends Migration
             $table->foreignId('user_id')->comment('Petugas yang membuat')->constrained();
             $table->string('nomor_surat')->nullable();
 
-            // Kolom JSON untuk menyimpan array data pihak yang direkomendasikan
             $table->json('pihak_direkomendasi_data');
 
-            // Kolom JSON untuk menyimpan array data pihak pelapor/korban
             $table->json('pihak_pelapor_data');
 
             $table->text('tembusan')->nullable();

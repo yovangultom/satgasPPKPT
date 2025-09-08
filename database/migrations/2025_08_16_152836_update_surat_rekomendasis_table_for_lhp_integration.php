@@ -9,11 +9,8 @@
         public function up(): void
         {
             Schema::table('surat_rekomendasis', function (Blueprint $table) {
-                // Kolom untuk menyimpan LHP yang menjadi dasar
                 $table->foreignId('laporan_hasil_pemeriksaan_id')->after('user_id')->nullable()->constrained()->cascadeOnDelete();
-                // Kolom untuk menyimpan status terbukti/tidak
                 $table->string('status_terbukti')->after('laporan_hasil_pemeriksaan_id');
-                // Kolom JSON untuk menyimpan detail rekomendasi (pasal, teks sanksi, dll)
                 $table->json('rekomendasi_data')->after('tembusan')->nullable();
             });
         }

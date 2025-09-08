@@ -85,10 +85,9 @@ class BorangPemeriksaansRelationManager extends RelationManager
         return $table
             ->recordTitle('Borang Pemeriksaan')
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('user.name')->label('Dibuat oleh'),
                 Tables\Columns\TextColumn::make('tanggal_pemeriksaan')->date(),
-                Tables\Columns\TextColumn::make('created_at')->label('Tanggal Input')->dateTime(),
+                Tables\Columns\TextColumn::make('created_at')->label('Tanggal Dibuat')->dateTime(),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
@@ -116,7 +115,7 @@ class BorangPemeriksaansRelationManager extends RelationManager
                         return $data;
                     })
                     ->successNotification(
-                        FilamentNotification::make() 
+                        FilamentNotification::make()
                             ->success()
                             ->title('Borang Pemeriksaan Berhasil Dibuat')
 
@@ -144,7 +143,7 @@ class BorangPemeriksaansRelationManager extends RelationManager
                     }),
                 Tables\Actions\Action::make('export_pdf')
                     ->label('PDF')
-                    ->icon('heroicon-o-document')
+                    ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
                     ->url(fn($record) => route('borang.export.pemeriksaan', $record))
                     ->openUrlInNewTab(),

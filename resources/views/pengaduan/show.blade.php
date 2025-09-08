@@ -1,19 +1,14 @@
 <x-app-layout>
-    <div class="py-12">
+    <div class="py-2">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6 sm:p-8">
-
-                    <!-- Tombol Aksi -->
-                    <div class="flex justify-between items-center mb-6 pb-4 border-b">
+                    <div class="flex justify-between items-center mb-4 pb-2 border-b">
                         <a href="{{ route('pengaduan.index') }}"
                             class="text-sm font-semibold text-indigo-600 hover:text-indigo-500">
                             &larr; Kembali ke Daftar Pengaduan
                         </a>
-
                     </div>
-
-                    <!-- Header Detail Pengaduan -->
                     <div class="mb-8">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
@@ -29,7 +24,6 @@
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Status</dt>
                                 <dd class="mt-1 text-lg font-semibold">
-                                    {{-- Anda bisa menyesuaikan warna badge sesuai status --}}
                                     <span
                                         class="px-3 py-1 text-sm rounded-full 
                                         @if ($pengaduan->status_pengaduan == 'Pending') bg-yellow-100 text-yellow-800 @endif

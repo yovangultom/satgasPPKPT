@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PengaduanPublikController;
 use App\Http\Controllers\PengaduanPdfController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SuratRekomendasiController;
 use App\Http\Middleware\EnsureUserIsPengguna;
 
 Route::get('/', function () {
@@ -44,6 +45,8 @@ Route::middleware('auth')->group(function () {
         ->name('lhp.export.pdf');
     Route::get('/surat_rekomendasi/{suratRekomendasi}/pdf', [PengaduanPdfController::class, 'exportSuratRekomendasiPdf'])
         ->name('surat_rekomendasi.export-pdf');
+    Route::get('/surat-rekomendasi/{suratRekomendasi}/export-merged-pdf', [SuratRekomendasiController::class, 'exportMergedPdf'])
+        ->name('surat_rekomendasi.export-merged-pdf');
 });
 
 require __DIR__ . '/auth.php';

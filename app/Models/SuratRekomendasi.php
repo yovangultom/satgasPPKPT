@@ -32,6 +32,9 @@ class SuratRekomendasi extends Model
         'file_sk_path',
         'status_sk',
         'email_penerima_sk',
+        'file_gabungan_path',
+        'pdf_path',
+
     ];
 
     /**

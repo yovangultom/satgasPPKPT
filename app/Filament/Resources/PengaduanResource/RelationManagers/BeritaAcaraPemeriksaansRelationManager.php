@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Pengaduan;
 use Filament\Notifications\Notification;
 use Filament\Actions\Action;
+use App\Notifications\PengaduanStatusUpdated;
+use Illuminate\Support\Facades\Log;
 
 class BeritaAcaraPemeriksaansRelationManager extends RelationManager
 {
@@ -182,16 +184,27 @@ class BeritaAcaraPemeriksaansRelationManager extends RelationManager
                         unset($data['pihak_diperiksa_key']);
                         return $data;
                     })
-                    ->after(function () {
+                    ->after(function (Model $record) {
                         /** @var \App\Models\Pengaduan $pengaduan */
                         $pengaduan = $this->getOwnerRecord();
                         $pengaduan->update(['status_pengaduan' => 'Investigasi']);
+
+                        $pengaduan->refresh();
+
+                        $user = $pengaduan->user;
+                        if ($user) {
+                            Log::info("Mempersiapkan notifikasi perubahan status (Investigasi) untuk User ID: {$user->id}, Email: {$user->email}");
+                            $user->notify(new PengaduanStatusUpdated($pengaduan));
+                            Log::info("Notifikasi untuk User ID: {$user->id} berhasil di-dispatch ke queue.");
+                        } else {
+                            Log::warning("Gagal mengirim notifikasi status (Investigasi): User tidak ditemukan untuk Pengaduan ID: {$pengaduan->id}");
+                        }
                     })
                     ->successNotification(
                         Notification::make()
                             ->success()
                             ->title('BAP Berhasil Dibuat')
-                            ->body('Status pengaduan telah diperbarui menjadi Investigasi.')
+                            ->body('Status pengaduan telah diperbarui menjadi "Investigasi" dan notifikasi telah dikirim ke pengguna.')
                     ),
             ])
             ->actions([

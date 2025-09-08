@@ -22,7 +22,9 @@ class BorangPemeriksaan extends Model
         'relasi_terlapor_korban',
         'kronologi_pemeriksaan',
         'kebutuhan_mendesak_verifikasi',
-        'pemeriksaan_bukti'
+        'pemeriksaan_bukti',
+        'pdf_path',
+
     ];
     protected $casts = ['saksi_info' => 'array', 'pemeriksa_info' => 'array'];
 

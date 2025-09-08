@@ -15,6 +15,7 @@ class LaporanHasilPemeriksaan extends Model
     protected $casts = [
         'pelanggaran_data' => 'array',
         'pasal_pelanggaran_id' => 'array',
+        'pdf_path' => 'string',
 
     ];
 

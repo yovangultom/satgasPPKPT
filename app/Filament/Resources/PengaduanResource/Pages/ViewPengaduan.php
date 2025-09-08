@@ -41,7 +41,7 @@ class ViewPengaduan extends ViewRecord
             Actions\Action::make('cetak_pdf')
                 ->label('PDF')
                 ->color('success')
-                ->icon('heroicon-o-document')
+                ->icon('heroicon-o-document-arrow-down')
                 ->url(route('pengaduan.pdf', ['pengaduan' => $this->record]))
                 ->openUrlInNewTab(),
         ];

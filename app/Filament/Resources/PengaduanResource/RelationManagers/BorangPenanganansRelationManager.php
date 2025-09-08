@@ -103,7 +103,6 @@ class BorangPenanganansRelationManager extends RelationManager
         return $table
             ->recordTitle('Borang Penanganan')
             ->columns([
-                Tables\Columns\TextColumn::make('id')->label('ID Borang')->sortable(),
                 Tables\Columns\TextColumn::make('user.name')->label('Diisi oleh'),
                 Tables\Columns\TextColumn::make('created_at')->label('Tanggal Dibuat')->dateTime()->sortable(),
             ])
@@ -154,7 +153,7 @@ class BorangPenanganansRelationManager extends RelationManager
                     ->fillForm(fn(BorangPenanganan $record) => $this->fillReadOnlyData($record)),
                 Tables\Actions\Action::make('export_pdf')
                     ->label('PDF')
-                    ->icon('heroicon-o-document')
+                    ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
                     ->url(fn($record) => route('borang.export.penanganan', $record))
                     ->openUrlInNewTab(),

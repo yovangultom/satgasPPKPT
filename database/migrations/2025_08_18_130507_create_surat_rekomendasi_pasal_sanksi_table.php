@@ -13,5 +13,4 @@ return new class extends Migration {
             $table->primary(['surat_rekomendasi_id', 'pasal_sanksi_id'], 'surat_rekomendasi_pasal_sanksi_primary');
         });
     }
-    // ... down method ...
 };

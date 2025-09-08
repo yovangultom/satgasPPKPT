@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Support\Facades\Notification;
 use Filament\Forms\Components\Placeholder;
+use Illuminate\Support\Facades\Log;
+
 
 class SuratRekomendasisRelationManager extends RelationManager
 {
@@ -338,6 +340,9 @@ class SuratRekomendasisRelationManager extends RelationManager
                         if ($rektors->isNotEmpty()) {
                             Notification::send($rektors, new RekomendasiBaruNotification($record));
                         }
+                        Log::info("Mempersiapkan untuk dispatch Job untuk SR ID: {$record->id}");
+                        \App\Jobs\GenerateMergedRekomendasiPdf::dispatch($record);
+                        Log::info("Job untuk SR ID: {$record->id} berhasil di-dispatch.");
                     })
                     ->successNotification(
                         FilamentNotification::make()
@@ -356,7 +361,7 @@ class SuratRekomendasisRelationManager extends RelationManager
 
                 Tables\Actions\Action::make('export_pdf')
                     ->label('PDF')
-                    ->icon('heroicon-o-document')
+                    ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
                     ->url(fn($record) => route('surat_rekomendasi.export-pdf', $record))
                     ->openUrlInNewTab(),

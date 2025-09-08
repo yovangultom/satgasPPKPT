@@ -1,8 +1,8 @@
 <x-app-layout>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-4 sm:py-2 lg:py-2">
+        <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
             <div x-data="formController()" x-init="init()">
-                <div class="bg-white  shadow-xl sm:rounded-lg p-8">
+                <div class="bg-white  shadow-xl sm:rounded-lg px-8 py-2">
                     <form id="laporForm" @submit.prevent="submitForm" action="{{ route('lapor.store') }}" method="POST"
                         enctype="multipart/form-data" class="space-y-8">
                         @csrf
@@ -27,7 +27,7 @@
                                     komunikasi lebih lanjut. Kerahasiaan Anda dijamin.</p>
                             </div>
                             <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6 border-t pt-3">
-                                <div class="sm:col-span-3">
+                                <div class="col-span-full sm:col-span-3">
                                     <label for="pelapor_nama"
                                         class="block text-sm font-medium leading-6 text-gray-900">Nama
                                         Lengkap</label>
@@ -36,13 +36,13 @@
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-500 bg-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6">
 
                                 </div>
-                                <div class="sm:col-span-3">
+                                <div class="col-span-full sm:col-span-3">
                                     <label for="pelapor_telepon"
                                         class="block text-sm font-medium leading-6 text-gray-900">Nomor Telepon</label>
                                     <input type="tel" id="pelapor_telepon" name="pelapor[nomor_telepon]" required
                                         class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 </div>
-                                <div class="sm:col-span-3 relative z-30">
+                                <div class="col-span-full sm:col-span-3 relative z-30">
                                     <label for="pelapor_jenis_kelamin"
                                         class="block text-sm font-medium leading-6 text-gray-900">Jenis Kelamin</label>
                                     <select id="pelapor_jenis_kelamin" name="pelapor[jenis_kelamin]" required
@@ -51,13 +51,13 @@
                                         <option>Perempuan</option>
                                     </select>
                                 </div>
-                                <div class="sm:col-span-3">
+                                <div class="col-span-full sm:col-span-3">
                                     <label for="pelapor_domisili"
                                         class="block text-sm font-medium leading-6 text-gray-900">Domisili</label>
                                     <input type="text" id="pelapor_domisili" name="pelapor[domisili]" required
                                         class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 </div>
-                                <div class="sm:col-span-3">
+                                <div class="col-span-full sm:col-span-3">
                                     <label for="pelapor_status"
                                         class="block text-sm font-medium leading-6 text-gray-900">Status Anda</label>
                                     <select id="pelapor_status" name="pelapor[status]" required
@@ -69,7 +69,7 @@
                                         <option>Masyarakat Umum</option>
                                     </select>
                                 </div>
-                                <div class="sm:col-span-3">
+                                <div class="col-span-full sm:col-span-3">
                                     <label for="pelapor_memiliki_disabilitas"
                                         class="block text-sm font-medium leading-6 text-gray-900">Apakah memiliki
                                         disabilitas?</label>
@@ -80,7 +80,7 @@
                                         <option value="1">Ya</option>
                                     </select>
                                 </div>
-                                <div class="sm:col-span-3">
+                                <div class="col-span-full sm:col-span-3">
                                     <label for="pelapor_peran"
                                         class="block text-sm font-medium leading-6 text-gray-900">Peran Anda</label>
 
@@ -106,7 +106,7 @@
                                 </div>
                                 <template x-for="(korban, index) in korbans" :key="index">
                                     <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6 border-t pt-3">
-                                        <div class="sm:col-span-3">
+                                        <div class="col-span-full sm:col-span-3">
                                             <label :for="'korban_nama_' + index"
                                                 class="block text-sm font-medium leading-6 text-gray-900"
                                                 x-text="'Nama Lengkap Korban ' + (index + 1)"></label>
@@ -114,7 +114,7 @@
                                                 :name="'korbans[' + index + '][nama]'" x-model="korban.nama" required
                                                 class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         </div>
-                                        <div class="sm:col-span-3">
+                                        <div class="col-span-full sm:col-span-3">
                                             <label :for="'korban_telepon_' + index"
                                                 class="block text-sm font-medium leading-6 text-gray-900">Nomor
                                                 Telepon
@@ -127,7 +127,7 @@
                                                 diketahui.</p>
 
                                         </div>
-                                        <div class="sm:col-span-3">
+                                        <div class="col-span-full sm:col-span-3">
                                             <label :for="'korban_jenis_kelamin_' + index"
                                                 class="block text-sm font-medium leading-6 text-gray-900">Jenis
                                                 Kelamin</label>
@@ -139,7 +139,7 @@
                                                 <option>Perempuan</option>
                                             </select>
                                         </div>
-                                        <div class="sm:col-span-3">
+                                        <div class="col-span-full sm:col-span-3">
                                             <label :for="'korban_domisili_' + index"
                                                 class="block text-sm font-medium leading-6 text-gray-900">Domisili</label>
                                             <input type="text" :id="'korban_domisili_' + index"
@@ -150,7 +150,7 @@
                                                 diketahui.</p>
 
                                         </div>
-                                        <div class="col-span-3">
+                                        <div class="col-span-full sm:col-span-3">
                                             <label :for="'korban_status_' + index"
                                                 class="block text-sm font-medium leading-6 text-gray-900">Status</label>
                                             <select :id="'korban_status_' + index"
@@ -164,7 +164,7 @@
                                                 <option>Masyarakat Umum</option>
                                             </select>
                                         </div>
-                                        <div class="sm:col-span-3">
+                                        <div class="col-span-full sm:col-span-3">
                                             <label :for="'korban_disabilitas_' + index"
                                                 class="block text-sm font-medium leading-6 text-gray-900">Apakah
                                                 memiliki
@@ -200,7 +200,7 @@
                             </div>
                             <template x-for="(terlapor, index) in terlapors" :key="index">
                                 <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6 border-t pt-3">
-                                    <div class="sm:col-span-3">
+                                    <div class="col-span-full sm:col-span-3">
                                         <label :for="'terlapor_nama_' + index"
                                             class="block text-sm font-medium leading-6 text-gray-900"
                                             x-text="'Nama Lengkap Terlapor ' + (index + 1)"></label>
@@ -208,7 +208,7 @@
                                             :name="'terlapors[' + index + '][nama]'" x-model="terlapor.nama" required
                                             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     </div>
-                                    <div class="sm:col-span-3">
+                                    <div class="col-span-full sm:col-span-3">
                                         <label :for="'terlapor_nomor_telepon_' + index"
                                             class="block text-sm font-medium leading-6 text-gray-900">Nomor
                                             Telepon</label>
@@ -220,7 +220,7 @@
                                             diketahui.</p>
 
                                     </div>
-                                    <div class="sm:col-span-3 relative z-30">
+                                    <div class="col-span-full sm:col-span-3 relative z-30">
                                         <label :for="'terlapor_jenis_kelamin_' + index"
                                             class="block text-sm font-medium leading-6 text-gray-900">Jenis
                                             Kelamin</label>
@@ -232,7 +232,7 @@
                                             <option>Perempuan</option>
                                         </select>
                                     </div>
-                                    <div class="sm:col-span-3">
+                                    <div class="col-span-full sm:col-span-3">
                                         <label :for="'terlapor_domisili_' + index"
                                             class="block text-sm font-medium leading-6 text-gray-900">Domisili</label>
                                         <input type="text" :id="'terlapor_domisili_' + index"
@@ -242,7 +242,7 @@
                                         <p class="mt-1 text-xs text-gray-500">Isi dengan tanda strip (-) jika tidak
                                             diketahui.</p>
                                     </div>
-                                    <div class="col-span-3">
+                                    <div class="col-span-full sm:col-span-3">
                                         <label :for="'terlapor_status_' + index"
                                             class="block text-sm font-medium leading-6 text-gray-900">Status</label>
                                         <select :id="'terlapor_status_' + index"
@@ -256,7 +256,7 @@
                                             <option>Masyarakat Umum</option>
                                         </select>
                                     </div>
-                                    <div class="sm:col-span-3">
+                                    <div class="col-span-full sm:col-span-3">
                                         <label :for="'terlapor_disabilitas_' + index"
                                             class="block text-sm font-medium leading-6 text-gray-900">Apakah
                                             memiliki
@@ -293,7 +293,7 @@
                                     detail.</p>
                             </div>
                             <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
-                                <div class="sm:col-span-3">
+                                <div class="col-span-full sm:col-span-3">
                                     <label for="jenis_kejadian"
                                         class="block text-sm font-medium leading-6 text-gray-900">Jenis
                                         Kejadian</label>
@@ -307,7 +307,7 @@
                                         <option>Diskriminasi dan intoleransi</option>
                                     </select>
                                 </div>
-                                <div class="sm:col-span-3">
+                                <div class="col-span-full sm:col-span-3">
                                     <label for="tanggal_kejadian"
                                         class="block text-sm font-medium leading-6 text-gray-900">Tanggal
                                         Kejadian
@@ -315,7 +315,7 @@
                                     <input type="date" id="tanggal_kejadian" name="tanggal_kejadian" required
                                         class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 </div>
-                                <div class="sm:col-span-3">
+                                <div class="col-span-full sm:col-span-3">
                                     <label for="terjadi_saat_tridharma"
                                         class="block text-sm font-medium leading-6 text-gray-900">
                                         Apakah kejadian kekerasan terjadi saat pelaksanaan Tri Dharma?
@@ -328,7 +328,8 @@
                                     </select>
                                     <p class="mt-1 text-xs text-gray-500">Pendidikan, Penelitian, dan Pengabdian.</p>
                                 </div>
-                                <div x-show="terjadiSaatTriDharma === '1'" x-transition class="sm:col-span-3">
+                                <div x-show="terjadiSaatTriDharma === '1'" x-transition
+                                    class="col-span-full sm:col-span-3">
                                     <label for="jenis_tridharma"
                                         class="block text-sm font-medium leading-6 text-gray-900">
                                         Apa jenis Tri Dharma yang berlangsung?
@@ -342,7 +343,7 @@
                                     </select>
                                 </div>
 
-                                <div class="sm:col-span-3">
+                                <div class="col-span-full sm:col-span-3">
                                     <label for="terjadi_di_wilayah_kampus"
                                         class="block text-sm font-medium leading-6 text-gray-900">
                                         Apakah kejadian kekerasan terjadi di wilayah kampus?
@@ -559,9 +560,9 @@
                             </div>
                         </div>
 
-                        <div class=" flex items-center justify-end gap-x-6">
+                        <div class=" flex items-center justify-end gap-x-6 sm:px-2 sm:py-4 lg:px-4 lg:py-6">
                             <button type="button" @click.prevent="showConfirmationModal = true"
-                                class="rounded-md bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                class="rounded-md bg-indigo-600 px-4 py-2 sm:px-6 sm:py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                 Kirim Laporan
                             </button>
                         </div>
