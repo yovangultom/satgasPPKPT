@@ -22,11 +22,24 @@ class PengaduanPdfController extends Controller
 {
     public function generatePdf(Pengaduan $pengaduan)
     {
+        if ($pengaduan->pdf_path && Storage::disk('public')->exists($pengaduan->pdf_path)) {
+            return Storage::disk('public')->response($pengaduan->pdf_path);
+        }
+
         \Carbon\Carbon::setLocale('id');
         $pengaduan->load(['user', 'pelapors', 'terlapors']);
         $pdf = Pdf::loadView('pdf.laporan_pengaduan', ['pengaduan' => $pengaduan]);
         $pdf->setPaper('a4', 'portrait');
-        return $pdf->stream('laporan-pengaduan-' . $pengaduan->nomor_pengaduan . '.pdf');
+        $pdfContent = $pdf->output();
+
+        $filePath = 'laporan_pengaduan/laporan-' . $pengaduan->nomor_pengaduan . '-' . time() . '.pdf';
+        Storage::disk('public')->put($filePath, $pdfContent);
+        $pengaduan->update(['pdf_path' => $filePath]);
+
+        return response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="laporan-pengaduan-' . $pengaduan->nomor_pengaduan . '.pdf"',
+        ]);
     }
 
     public function generateSuratPanggilan(Pengaduan $pengaduan, Model $pihak, string $status, string $peranText, array $formData)
@@ -103,10 +116,13 @@ class PengaduanPdfController extends Controller
         ]);
     }
 
-    public function exportBapPdf(BeritaAcaraPemeriksaan $bap)
+    public function exportBapPdf(BeritaAcaraPemeriksaan $bap, bool $stream = true)
     {
         if ($bap->pdf_path && Storage::disk('public')->exists($bap->pdf_path)) {
-            return Storage::disk('public')->response($bap->pdf_path);
+            if ($stream) {
+                return Storage::disk('public')->response($bap->pdf_path);
+            }
+            return;
         }
 
         \Carbon\Carbon::setLocale('id');
@@ -149,10 +165,13 @@ class PengaduanPdfController extends Controller
         ]);
     }
 
-    public function exportLhpPDF(LaporanHasilPemeriksaan $lhp)
+    public function exportLhpPDF(LaporanHasilPemeriksaan $lhp, bool $stream = true)
     {
         if ($lhp->pdf_path && Storage::disk('public')->exists($lhp->pdf_path)) {
-            return Storage::disk('public')->response($lhp->pdf_path);
+            if ($stream) {
+                return Storage::disk('public')->response($lhp->pdf_path);
+            }
+            return;
         }
 
         \Carbon\Carbon::setLocale('id');

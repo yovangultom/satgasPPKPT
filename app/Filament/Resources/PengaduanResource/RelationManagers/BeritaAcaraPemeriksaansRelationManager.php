@@ -124,8 +124,7 @@ class BeritaAcaraPemeriksaansRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('pihak_diperiksa_peran')->label('Peran'),
                 Tables\Columns\TextColumn::make('jenis_kejadian_awal')
                     ->label('Jenis Kejadian')
-                    ->badge()
-                    ->searchable(),
+                    ->badge(),
                 Tables\Columns\TextColumn::make('tanggal_pemeriksaan')->date('d F Y')->label('Tgl Pemeriksaan'),
                 Tables\Columns\TextColumn::make('user.name')->label('Dibuat oleh'),
                 Tables\Columns\TextColumn::make('created_at')->label('Tanggal Dibuat')->dateTime()->sortable(),

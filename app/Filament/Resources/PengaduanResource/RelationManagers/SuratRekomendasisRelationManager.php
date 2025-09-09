@@ -50,6 +50,7 @@ class SuratRekomendasisRelationManager extends RelationManager
         $pihakPelaporOptions = $pelaporOptions->merge($korbanOptions);
 
         return $form
+            ->columns(1)
             ->schema([
                 Forms\Components\Select::make('laporan_hasil_pemeriksaan_id')
                     ->label('Dasar Laporan Hasil Pemeriksaan (LHP)')
@@ -94,161 +95,198 @@ class SuratRekomendasisRelationManager extends RelationManager
 
                 Forms\Components\Hidden::make('status_terbukti'),
 
-                Forms\Components\Repeater::make('pihak_direkomendasi_data')
-                    ->label('Pihak yang Direkomendasikan (Sebelumnya Terlapor)')
+                Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Select::make('key')
-                            ->label('Pilih Pihak')
-                            ->options($terlaporOptions)
-                            ->live()
-                            ->required()
-                            ->afterStateUpdated(function (Set $set, ?string $state) use ($pengaduan) {
-                                if (blank($state)) return;
-                                [$tipe, $id] = explode('|', $state);
-                                $pihak = $pengaduan->terlapors()->find($id);
-                                if ($pihak) {
-                                    $set('nama', $pihak->nama);
-                                    $set('status', $pihak->status);
-                                }
-                            }),
+                        Forms\Components\Repeater::make('pihak_direkomendasi_data')
+                            ->label('Pihak yang Direkomendasikan (Sebelumnya Terlapor)')
+                            ->schema([
+                                Forms\Components\Select::make('key')
+                                    ->label('Pilih Pihak')
+                                    ->options($terlaporOptions)
+                                    ->live()
+                                    ->required()
+                                    ->afterStateUpdated(function (Set $set, ?string $state) use ($pengaduan) {
+                                        if (blank($state)) return;
+                                        [$tipe, $id] = explode('|', $state);
+                                        $pihak = $pengaduan->terlapors()->find($id);
+                                        if ($pihak) {
+                                            $set('nama', $pihak->nama);
+                                            $set('status', $pihak->status);
 
-                        Forms\Components\TextInput::make('nama')->label('Nama')->readOnly(),
-                        Forms\Components\TextInput::make('status')->label('Status')->readOnly(),
+                                            $suratPanggilan = $pengaduan->suratPanggilans()
+                                                ->where('nama_pihak', $pihak->nama)
+                                                ->first();
 
-                        Forms\Components\TextInput::make('nim')->label('NIM')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa'),
-                        Forms\Components\TextInput::make('semester')->label('Semester')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa'),
-                        Forms\Components\TextInput::make('prodi')->label('Program Studi')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa'),
-                        Forms\Components\TextInput::make('fakultas')->label('Fakultas')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa'),
-                        Forms\Components\TextInput::make('nip_nrk')->label('NIP/NRK')->required()->visible(fn(Get $get) => in_array($get('status'), ['Dosen', 'Tendik'])),
-                        Forms\Components\TextInput::make('fakultas_unit')->label('Fakultas/Lembaga/Unit')->required()->visible(fn(Get $get) => in_array($get('status'), ['Dosen', 'Tendik'])),
-                        Forms\Components\TextInput::make('nik')->label('NIK')->required()->visible(fn(Get $get) => in_array($get('status'), ['Warga Kampus', 'Masyarakat Umum'])),
-                        Forms\Components\TextInput::make('instansi')->label('Instansi')->required()->visible(fn(Get $get) => in_array($get('status'), ['Warga Kampus', 'Masyarakat Umum'])),
-                        Forms\Components\TextInput::make('keterangan')->label('Keterangan')->visible(fn(Get $get) => in_array($get('status'), ['Warga Kampus', 'Masyarakat Umum'])),
-                    ])
-                    ->columnSpanFull()
-                    ->addActionLabel('Tambah Pihak Terlapor')
-                    ->collapsible(),
+                                            if ($suratPanggilan) {
+                                                $set('nim', $suratPanggilan->nim);
+                                                $set('semester', $suratPanggilan->semester);
+                                                $set('prodi', $suratPanggilan->program_studi);
+                                                $set('fakultas', $suratPanggilan->fakultas);
+                                                $set('nip_nrk', $suratPanggilan->nip);
+                                                $set('fakultas_unit', $suratPanggilan->fakultas);
+                                                $set('instansi', $suratPanggilan->asal_instansi);
+                                            }
+                                        }
+                                    }),
 
-                Forms\Components\Repeater::make('pihak_pelapor_data')
-                    ->label('Pihak Pelapor/Korban')
-                    ->schema([
-                        Forms\Components\Select::make('key')
-                            ->label('Pilih Pihak')
-                            ->options($pihakPelaporOptions)
-                            ->live()
-                            ->required()
-                            ->afterStateUpdated(function (Set $set, ?string $state) use ($pengaduan) {
-                                if (blank($state)) return;
-                                [$tipe, $id] = explode('|', $state);
-                                $pihak = match ($tipe) {
-                                    'pelapor' => $pengaduan->pelapors()->find($id),
-                                    'korban' => $pengaduan->korbans()->find($id),
-                                };
-                                if ($pihak) {
-                                    $set('nama', $pihak->nama);
-                                    $set('status', $pihak->status);
-                                }
-                            }),
+                                Forms\Components\TextInput::make('nama')->label('Nama')->readOnly(),
+                                Forms\Components\TextInput::make('status')->label('Status')->readOnly(),
 
-                        Forms\Components\TextInput::make('nama')->label('Nama')->readOnly(),
-                        Forms\Components\TextInput::make('status')->label('Status')->readOnly(),
-
-                        Forms\Components\TextInput::make('nim')->label('NIM')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa'),
-                        Forms\Components\TextInput::make('semester')->label('Semester')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa'),
-                        Forms\Components\TextInput::make('prodi')->label('Program Studi')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa'),
-                        Forms\Components\TextInput::make('fakultas')->label('Fakultas')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa'),
-                        Forms\Components\TextInput::make('nip_nrk')->label('NIP/NRK')->required()->visible(fn(Get $get) => in_array($get('status'), ['Dosen', 'Tendik'])),
-                        Forms\Components\TextInput::make('fakultas_unit')->label('Fakultas/Lembaga/Unit')->required()->visible(fn(Get $get) => in_array($get('status'), ['Dosen', 'Tendik'])),
-                        Forms\Components\TextInput::make('nik')->label('NIK')->required()->visible(fn(Get $get) => in_array($get('status'), ['Warga Kampus', 'Masyarakat Umum'])),
-                        Forms\Components\TextInput::make('instansi')->label('Instansi')->required()->visible(fn(Get $get) => in_array($get('status'), ['Warga Kampus', 'Masyarakat Umum'])),
-                        Forms\Components\TextInput::make('keterangan')->label('Keterangan')->required()->visible(fn(Get $get) => in_array($get('status'), ['Warga Kampus', 'Masyarakat Umum'])),
-                    ])
-                    ->columnSpanFull()
-                    ->addActionLabel('Tambah Pihak Pelapor/Korban')
-                    ->collapsible(),
-
-                Forms\Components\Section::make('Rekomendasi Sanksi')
-                    ->visible(fn(Get $get) => $get('status_terbukti') === 'terbukti')
-                    ->schema([
-                        Placeholder::make('jenis_kekerasan_display')
-                            ->label('Jenis Kekerasan Sesuai LHP')
-                            ->content(function (Get $get): string {
-                                return nl2br(e($get('jenis_kekerasan_display') ?? 'Pilih LHP terlebih dahulu.'));
-                            }),
-
-                        Placeholder::make('pasal_pelanggaran_display')
-                            ->label('Pasal Pelanggaran Sesuai LHP')
-                            ->content(function (Get $get): string {
-                                return nl2br(e($get('pasal_pelanggaran_display') ?? 'Pilih LHP terlebih dahulu.'));
-                            }),
-
-                        Forms\Components\Select::make('status_pelaku_manual')
-                            ->label('Pilih Status Pelaku (untuk Sanksi)')
-                            ->options([
-                                'Dosen ASN' => 'Dosen ASN',
-                                'Dosen Non-ASN' => 'Dosen Non-ASN',
-                                'Tenaga Kependidikan ASN' => 'Tenaga Kependidikan ASN',
-                                'Tenaga Kependidikan Non-ASN' => 'Tenaga Kependidikan Non-ASN',
-                                'Mahasiswa' => 'Mahasiswa',
-                                'Warga Kampus' => 'Warga Kampus',
-                                'Pimpinan Perguruan Tinggi' => 'Pimpinan Perguruan Tinggi',
-                                'Pimpinan Perguruan Tinggi non-ASN' => 'Pimpinan Perguruan Tinggi non-ASN',
+                                Forms\Components\TextInput::make('nim')->label('NIM')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa')->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('semester')->label('Semester')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa')->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('prodi')->label('Program Studi')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa')->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('fakultas')->label('Fakultas')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa')->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('nip_nrk')->label('NIP/NRK')->required()->visible(fn(Get $get) => in_array($get('status'), ['Dosen', 'Tendik']))->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('fakultas_unit')->label('Fakultas/Lembaga/Unit')->required()->visible(fn(Get $get) => in_array($get('status'), ['Dosen', 'Tendik']))->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('nik')->label('NIK')->required()->visible(fn(Get $get) => in_array($get('status'), ['Warga Kampus', 'Masyarakat Umum'])),
+                                Forms\Components\TextInput::make('instansi')->label('Instansi')->required()->visible(fn(Get $get) => in_array($get('status'), ['Warga Kampus', 'Masyarakat Umum']))->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('keterangan')->label('Keterangan')->visible(fn(Get $get) => in_array($get('status'), ['Warga Kampus', 'Masyarakat Umum'])),
                             ])
-                            ->helperText('Pilihan ini akan menentukan daftar sanksi yang tersedia.')
-                            ->live()
-                            ->required(),
+                            ->columnSpanFull()
+                            ->addActionLabel('Tambah Pihak Terlapor')
+                            ->collapsible(),
 
-                        Forms\Components\Select::make('jenis_sanksi')
-                            ->label('Pilih Jenis Sanksi')
-                            ->options([
-                                'Ringan' => 'Ringan',
-                                'Sedang' => 'Sedang',
-                                'Berat' => 'Berat',
+                        Forms\Components\Repeater::make('pihak_pelapor_data')
+                            ->label('Pihak Pelapor/Korban')
+                            ->schema([
+                                Forms\Components\Select::make('key')
+                                    ->label('Pilih Pihak')
+                                    ->options($pihakPelaporOptions)
+                                    ->live()
+                                    ->required()
+                                    ->afterStateUpdated(function (Set $set, ?string $state) use ($pengaduan) {
+                                        if (blank($state)) return;
+                                        [$tipe, $id] = explode('|', $state);
+                                        $pihak = match ($tipe) {
+                                            'pelapor' => $pengaduan->pelapors()->find($id),
+                                            'korban' => $pengaduan->korbans()->find($id),
+                                        };
+                                        if ($pihak) {
+                                            $set('nama', $pihak->nama);
+                                            $set('status', $pihak->status);
+
+                                            $suratPanggilan = $pengaduan->suratPanggilans()
+                                                ->where('nama_pihak', $pihak->nama)
+                                                ->first();
+
+                                            if ($suratPanggilan) {
+                                                $set('nim', $suratPanggilan->nim);
+                                                $set('semester', $suratPanggilan->semester);
+                                                $set('prodi', $suratPanggilan->program_studi);
+                                                $set('fakultas', $suratPanggilan->fakultas);
+                                                $set('nip_nrk', $suratPanggilan->nip);
+                                                $set('fakultas_unit', $suratPanggilan->fakultas);
+                                                $set('instansi', $suratPanggilan->asal_instansi);
+                                            }
+                                        }
+                                    }),
+
+                                Forms\Components\TextInput::make('nama')->label('Nama')->readOnly(),
+                                Forms\Components\TextInput::make('status')->label('Status')->readOnly(),
+
+                                Forms\Components\TextInput::make('nim')->label('NIM')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa')->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('semester')->label('Semester')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa')->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('prodi')->label('Program Studi')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa')->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('fakultas')->label('Fakultas')->required()->visible(fn(Get $get) => $get('status') === 'Mahasiswa')->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('nip_nrk')->label('NIP/NRK')->required()->visible(fn(Get $get) => in_array($get('status'), ['Dosen', 'Tendik']))->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('fakultas_unit')->label('Fakultas/Lembaga/Unit')->required()->visible(fn(Get $get) => in_array($get('status'), ['Dosen', 'Tendik']))->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('nik')->label('NIK')->required()->visible(fn(Get $get) => in_array($get('status'), ['Warga Kampus', 'Masyarakat Umum'])),
+                                Forms\Components\TextInput::make('instansi')->label('Instansi')->required()->visible(fn(Get $get) => in_array($get('status'), ['Warga Kampus', 'Masyarakat Umum']))->helperText('Data diisi otomatis jika tersedia.'),
+                                Forms\Components\TextInput::make('keterangan')->label('Keterangan')->required()->visible(fn(Get $get) => in_array($get('status'), ['Warga Kampus', 'Masyarakat Umum'])),
                             ])
-                            ->live()
-                            ->required(),
+                            ->columnSpanFull()
+                            ->addActionLabel('Tambah Pihak Pelapor/Korban')
+                            ->collapsible(),
 
-                        Forms\Components\Select::make('sanksi_ids')
-                            ->label('Pilih Pasal Sanksi yang Direkomendasikan')
-                            ->multiple()
-                            ->relationship('sanksis', 'keterangan')
-                            ->options(function (Get $get): array {
-                                $statusPelaku = $get('status_pelaku_manual');
-                                $jenisSanksi = $get('jenis_sanksi');
+                        Forms\Components\Section::make('Rekomendasi Sanksi')
+                            ->visible(fn(Get $get) => $get('status_terbukti') === 'terbukti')
+                            ->schema([
+                                Placeholder::make('jenis_kekerasan_display')
+                                    ->label('Jenis Kekerasan Sesuai LHP')
+                                    ->content(function (Get $get): string {
+                                        return nl2br(e($get('jenis_kekerasan_display') ?? 'Pilih LHP terlebih dahulu.'));
+                                    }),
 
-                                if (empty($statusPelaku) || empty($jenisSanksi)) {
-                                    return [];
-                                }
+                                Placeholder::make('pasal_pelanggaran_display')
+                                    ->label('Pasal Pelanggaran Sesuai LHP')
+                                    ->content(function (Get $get): string {
+                                        return nl2br(e($get('pasal_pelanggaran_display') ?? 'Pilih LHP terlebih dahulu.'));
+                                    }),
 
-                                return PasalSanksi::where('pelaku', $statusPelaku)
-                                    ->where('jenis_sanksi', $jenisSanksi)
-                                    ->get()
-                                    ->mapWithKeys(function ($sanksi) {
-                                        $label = "Pasal {$sanksi->pasal} Ayat {$sanksi->ayat} Butir {$sanksi->butir} - {$sanksi->keterangan}";
-                                        return [$sanksi->id => $label];
+                                Forms\Components\Select::make('status_pelaku_manual')
+                                    ->label('Pilih Status Pelaku (untuk Sanksi)')
+                                    ->options([
+                                        'Dosen ASN' => 'Dosen ASN',
+                                        'Dosen Non-ASN' => 'Dosen Non-ASN',
+                                        'Tenaga Kependidikan ASN' => 'Tenaga Kependidikan ASN',
+                                        'Tenaga Kependidikan Non-ASN' => 'Tenaga Kependidikan Non-ASN',
+                                        'Mahasiswa' => 'Mahasiswa',
+                                        'Warga Kampus' => 'Warga Kampus',
+                                        'Pimpinan Perguruan Tinggi' => 'Pimpinan Perguruan Tinggi',
+                                        'Pimpinan Perguruan Tinggi non-ASN' => 'Pimpinan Perguruan Tinggi non-ASN',
+                                    ])
+                                    ->helperText('Pilihan ini akan menentukan daftar sanksi yang tersedia.')
+                                    ->live()
+                                    ->required(),
+
+                                Forms\Components\Select::make('jenis_sanksi')
+                                    ->label('Pilih Jenis Sanksi')
+                                    ->options([
+                                        'Ringan' => 'Ringan',
+                                        'Sedang' => 'Sedang',
+                                        'Berat' => 'Berat',
+                                    ])
+                                    ->live()
+                                    ->required(),
+
+                                Forms\Components\Select::make('sanksi_ids')
+                                    ->label('Pilih Pasal Sanksi yang Direkomendasikan')
+                                    ->multiple()
+                                    ->relationship('sanksis', 'keterangan')
+                                    ->options(function (Get $get): array {
+                                        $statusPelaku = $get('status_pelaku_manual');
+                                        $jenisSanksi = $get('jenis_sanksi');
+
+                                        if (empty($statusPelaku) || empty($jenisSanksi)) {
+                                            return [];
+                                        }
+
+                                        return PasalSanksi::where('pelaku', $statusPelaku)
+                                            ->where('jenis_sanksi', $jenisSanksi)
+                                            ->get()
+                                            ->mapWithKeys(function ($sanksi) {
+                                                $label = "Pasal {$sanksi->pasal} Ayat {$sanksi->ayat} Butir {$sanksi->butir} - {$sanksi->keterangan}";
+                                                return [$sanksi->id => $label];
+                                            })
+                                            ->all();
                                     })
-                                    ->all();
-                            })
-                            ->searchable()
-                            ->preload()
-                            ->required(),
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
 
-                        Forms\Components\Textarea::make('sanksi_administratif')
-                            ->label('Keterangan')
-                            ->helperText('Keterangan tambahan.'),
-                    ]),
+                                Forms\Components\Textarea::make('sanksi_administratif')
+                                    ->label('Keterangan')
+                                    ->helperText('Keterangan tambahan.'),
+                            ]),
 
-                Forms\Components\Section::make('Rekomendasi Pemulihan')
-                    ->visible(fn(Get $get) => $get('status_terbukti') === 'tidak_terbukti')
-                    ->schema([
-                        Forms\Components\Placeholder::make('pemulihan_nama_baik')
-                            ->label('Tindakan')
-                            ->content('Pemulihan nama baik terhadap yang bersangkutan (terlapor).'),
-                    ]),
+                        Forms\Components\Section::make('Rekomendasi Pemulihan')
+                            ->visible(fn(Get $get) => $get('status_terbukti') === 'tidak_terbukti')
+                            ->schema([
+                                Forms\Components\Placeholder::make('pemulihan_nama_baik')
+                                    ->label('Tindakan')
+                                    ->content('Pemulihan nama baik terhadap yang bersangkutan (terlapor).'),
+                            ]),
 
-                Forms\Components\Textarea::make('tembusan')
-                    ->label('Tembusan Surat')
-                    ->columnSpanFull(),
+                        Forms\Components\Textarea::make('tembusan')
+                            ->label('Tembusan Surat')
+                            ->columnSpanFull(),
+                    ])
+                    ->visible(fn(Get $get): bool => filled($get('laporan_hasil_pemeriksaan_id'))),
+
+                Placeholder::make('Pilih LHP')
+                    ->content('Silakan pilih Laporan Hasil Pemeriksaan (LHP) terlebih dahulu untuk melanjutkan pengisian.')
+                    ->visible(fn(Get $get): bool => blank($get('laporan_hasil_pemeriksaan_id'))),
+
             ]);
     }
 
@@ -336,10 +374,7 @@ class SuratRekomendasisRelationManager extends RelationManager
                         /** @var \App\Models\Pengaduan $pengaduan */
                         $pengaduan = $this->getOwnerRecord();
                         $pengaduan->update(['status_pengaduan' => 'Tindak Lanjut Kesimpulan dan Rekomendasi']);
-                        $rektors = User::role('rektor')->get();
-                        if ($rektors->isNotEmpty()) {
-                            Notification::send($rektors, new RekomendasiBaruNotification($record));
-                        }
+
                         Log::info("Mempersiapkan untuk dispatch Job untuk SR ID: {$record->id}");
                         \App\Jobs\GenerateMergedRekomendasiPdf::dispatch($record);
                         Log::info("Job untuk SR ID: {$record->id} berhasil di-dispatch.");
@@ -348,7 +383,7 @@ class SuratRekomendasisRelationManager extends RelationManager
                         FilamentNotification::make()
                             ->success()
                             ->title('Surat Rekomendasi Berhasil Dibuat')
-                            ->body('Status pengaduan telah diperbarui menjadi Tindak Lanjut Kesimpulan dan Rekomendasi.')
+                            ->body('Proses pembuatan PDF gabungan dan pengiriman notifikasi sedang berjalan di latar belakang.')
                     ),
             ])
             ->actions([

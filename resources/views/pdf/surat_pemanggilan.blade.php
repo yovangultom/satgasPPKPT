@@ -264,13 +264,13 @@
 
         <div style="clear: both;"></div>
 
-        <div class="tembusan">
+        {{-- <div class="tembusan">
             <strong>Tembusan:</strong>
             <ol>
                 <li>Wakil Rektor Bidang Akademik dan Kemahasiswaan</li>
                 <li>Kepala Biro Akademik, Perencanaan, dan Umum</li>
             </ol>
-        </div>
+        </div> --}}
     </div>
 
 </body>

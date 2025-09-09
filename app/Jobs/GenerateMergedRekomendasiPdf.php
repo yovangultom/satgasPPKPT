@@ -92,6 +92,14 @@ class GenerateMergedRekomendasiPdf implements ShouldQueue
             $pdfMerger->addString(Pdf::loadHTML($view->render())->output());
             Log::info("PDF utama berhasil ditambahkan.");
 
+            Log::info("Memeriksa lampiran tipe: Laporan Pengaduan Awal...");
+            if (isset($pengaduan->pdf_path) && Storage::disk('public')->exists($pengaduan->pdf_path)) {
+                $pdfMerger->addPDF(Storage::disk('public')->path($pengaduan->pdf_path), 'all');
+                Log::info("-> Berhasil menambahkan lampiran PDF: {$pengaduan->pdf_path}");
+            } else {
+                Log::warning("-> Lampiran PDF Laporan Pengaduan Awal tidak ditemukan. Path: " . ($pengaduan->pdf_path ?? 'NULL'));
+            }
+
             $relatedDocs = [
                 'Surat Panggilan' => $pengaduan->suratPanggilans,
                 'Borang Penanganan' => $pengaduan->borangPenanganans,
@@ -113,7 +121,7 @@ class GenerateMergedRekomendasiPdf implements ShouldQueue
             }
 
             Log::info("Menggabungkan semua PDF...");
-            $fileName = 'rekomendasi_gabungan/' . Str::slug($pengaduan->nomor_pengaduan) . '_' . time() . '.pdf';
+            $fileName = 'rekomendasi_gabungan/' . Str::slug($pengaduan->nomor_pengaduan) . '.pdf';
             $fullPath = Storage::disk('public')->path($fileName);
             $directory = dirname($fullPath);
             if (!File::isDirectory($directory)) {

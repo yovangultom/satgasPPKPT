@@ -38,6 +38,7 @@ class Pengaduan extends Model
         'url_bukti_tambahan',
         'status_pengaduan',
         'pasal_pelanggaran_id',
+        'pdf_path',
 
     ];
     /**
