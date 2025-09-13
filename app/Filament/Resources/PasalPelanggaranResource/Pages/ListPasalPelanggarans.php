@@ -13,7 +13,7 @@ class ListPasalPelanggarans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('Tambah Pasal Pelanggaran')->icon('heroicon-m-plus'),
         ];
     }
 }

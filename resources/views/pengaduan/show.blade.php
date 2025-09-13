@@ -36,11 +36,9 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Seksi Pelapor, Korban, dan Terlapor -->
                     <div class="mt-6 border-t border-gray-200 pt-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">Pihak Terkait</h3>
 
-                        {{-- Data Pelapor --}}
                         @foreach ($pengaduan->pelapors as $pelapor)
                             <div class="mb-4 p-4 border rounded-lg">
                                 <h4 class="font-semibold text-black mb-2">Pelapor: {{ $pelapor->nama }}
@@ -50,13 +48,12 @@
                                 <p class="text-sm text-gray-800">Jenis Kelamin: {{ $pelapor->jenis_kelamin }}</p>
                                 <p class="text-sm text-gray-800">Domisili: {{ $pelapor->domisili }}</p>
                                 <p class="text-sm text-gray-800">Memiliki Disabilitas:
-                                    {{ $pelapor->memiliki_disabilitas }}</p>
+                                    {{ $pelapor->memiliki_disabilitas ? 'Ya' : 'Tidak' }}</p>
                                 <p class="text-sm text-gray-800">Status: {{ $pelapor->status }}</p>
 
                             </div>
                         @endforeach
                         @if ($pengaduan->pelapors->first() && $pengaduan->pelapors->first()->pivot->peran_dalam_pengaduan === 'Saksi')
-                            {{-- Data Korban --}}
                             @if ($pengaduan->korbans->isNotEmpty())
                                 @foreach ($pengaduan->korbans as $korban)
                                     <div class="mb-4 p-4 border rounded-lg bg-green-50">
@@ -68,13 +65,12 @@
                                         </p>
                                         <p class="text-sm text-gray-800">Domisili: {{ $korban->domisili }}</p>
                                         <p class="text-sm text-gray-800">Memiliki Disabilitas:
-                                            {{ $korban->memiliki_disabilitas }}</p>
+                                            {{ $korban->memiliki_disabilitas ? 'Ya' : 'Tidak' }}</p>
                                         <p class="text-sm text-gray-800">Status: {{ $korban->status }}</p>
                                     </div>
                                 @endforeach
                             @endif
                         @endif
-                        {{-- Data Terlapor --}}
                         @if ($pengaduan->terlapors->isNotEmpty())
                             @foreach ($pengaduan->terlapors as $terlapor)
                                 <div class="mb-4 p-4 border rounded-lg bg-red-50">
@@ -83,7 +79,7 @@
                                     <p class="text-sm text-gray-800">Jenis Kelamin: {{ $terlapor->jenis_kelamin }}</p>
                                     <p class="text-sm text-gray-800">Domisili: {{ $terlapor->domisili }}</p>
                                     <p class="text-sm text-gray-800">Memiliki Disabilitas:
-                                        {{ $terlapor->memiliki_disabilitas }}</p>
+                                        {{ $terlapor->memiliki_disabilitas ? 'Ya' : 'Tidak' }}</p>
                                     <p class="text-sm text-gray-800">Status: {{ $terlapor->status }}</p>
 
                                 </div>

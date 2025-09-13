@@ -38,11 +38,11 @@ class ManageKetuaSatgas extends Page implements Forms\Contracts\HasForms
                     ->required(),
 
                 Forms\Components\TextInput::make('nip')
-                    ->label('NIP')
+                    ->label('NIP / NRK')
                     ->nullable(),
 
                 Forms\Components\FileUpload::make('tanda_tangan')
-                    ->label('Tanda Tangan (Format: .png, .jpg)')
+                    ->label('Tanda Tangan (Format: .png)')
                     ->image()
                     ->disk('public')
                     ->directory('tanda-tangan-satgas')

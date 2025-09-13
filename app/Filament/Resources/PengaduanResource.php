@@ -199,7 +199,7 @@ class PengaduanResource extends Resource
             ->query(Pengaduan::query()->with('user'))
             ->columns([
                 Tables\Columns\TextColumn::make('nomor_pengaduan')->label('Nomor Pengaduan')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('jenis_kejadian')->label('Judul/Jenis Kejadian')->limit(40)->searchable(),
+                Tables\Columns\TextColumn::make('jenis_kejadian')->label('Jenis Kekerasan')->limit(40)->searchable(),
                 Tables\Columns\TextColumn::make('tanggal_pelaporan')->dateTime('d M Y, H:i')->sortable(),
                 Tables\Columns\TextColumn::make('status_pengaduan')->searchable()->badge()->color(fn(string $state): string => match ($state) {
                     'Menunggu' => 'gray',
@@ -215,7 +215,7 @@ class PengaduanResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()->label('View'),
+                Tables\Actions\ViewAction::make()->label('Lihat'),
                 TableAction::make('updateStatus')
                     ->label('Edit Status')
                     ->icon('heroicon-m-pencil-square')
