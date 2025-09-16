@@ -43,7 +43,7 @@
             </form>
         </div>
         <div class="text-center mt-6 text-sm text-gray-500">
-            &copy; {{ date('Y') }} Satgas PPKPT 2025. All Rights Reserved.
+            &copy; SATGAS PPKPT {{ date('Y') }} . All Rights Reserved.
         </div>
     </div>
 </x-guest-layout>
