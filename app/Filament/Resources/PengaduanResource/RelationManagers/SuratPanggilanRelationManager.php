@@ -71,6 +71,8 @@ class SuratPanggilanRelationManager extends RelationManager
                     ->label('Buat Surat Panggilan')
                     ->icon('heroicon-o-document-arrow-down')
                     ->modalHeading('Buat Surat Panggilan Pemeriksaan')
+                    ->modalSubmitActionLabel('Simpan')
+                    ->modalCancelActionLabel('Batal')
                     ->closeModalByClickingAway(false)
 
                     ->form(function () {
@@ -167,6 +169,10 @@ class SuratPanggilanRelationManager extends RelationManager
                     ->visible(fn($record) => $record->pdf_path && Storage::disk('public')->exists($record->pdf_path)),
                 Tables\Actions\DeleteAction::make()
                     ->label('Hapus')
+                    ->modalHeading('Hapus Surat Panggilan')
+                    ->modalDescription('Apakah Anda yakin ingin melakukan ini? Data tidak dapat dikembalikan.')
+                    ->modalSubmitActionLabel('Ya, Hapus Sekarang')
+                    ->modalCancelActionLabel('Batal')
                     ->authorize(true),
             ])
             ->bulkActions([

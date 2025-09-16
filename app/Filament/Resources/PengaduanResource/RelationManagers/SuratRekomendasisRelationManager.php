@@ -332,8 +332,10 @@ class SuratRekomendasisRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->label('Buat Surat Rekomendasi')
                     ->modalHeading('Surat Rekomendasi')
+                    ->icon('heroicon-o-document')
                     ->createAnother(false)
-                    ->modalSubmitActionLabel('Save')
+                    ->modalSubmitActionLabel('Simpan')
+                    ->modalCancelActionLabel('Batal')
                     ->authorize(true)
                     ->closeModalByClickingAway(false)
                     ->mutateFormDataUsing(function (array $data): array {
@@ -392,8 +394,10 @@ class SuratRekomendasisRelationManager extends RelationManager
                     ->icon('heroicon-o-eye')
                     ->color('gray')
                     ->modalHeading('Surat Rekomendasi')
-                    ->fillForm(fn(SuratRekomendasi $record): array => $this->fillInitialData($record)),
-
+                    ->fillForm(fn(SuratRekomendasi $record): array => $this->fillInitialData($record))
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup')
+                    ->closeModalByClickingAway(false),
                 Tables\Actions\Action::make('export_pdf')
                     ->label('PDF')
                     ->icon('heroicon-o-document-arrow-down')
@@ -402,6 +406,10 @@ class SuratRekomendasisRelationManager extends RelationManager
                     ->openUrlInNewTab(),
                 Tables\Actions\DeleteAction::make()
                     ->label('Hapus')
+                    ->modalHeading('Hapus Surat Rekomendasi')
+                    ->modalDescription('Apakah Anda yakin ingin melakukan ini? Data tidak dapat dikembalikan.')
+                    ->modalSubmitActionLabel('Ya, Hapus Sekarang')
+                    ->modalCancelActionLabel('Batal')
                     ->authorize(true)
                     ->visible(fn(SuratRekomendasi $record): bool => $record->status_rektor === 'Menunggu Persetujuan'),
             ]);

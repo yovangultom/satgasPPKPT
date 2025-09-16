@@ -110,8 +110,10 @@ class BorangPenanganansRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->label('Buat Borang Penanganan')
                     ->modalHeading(' Borang Penanganan')
+                    ->icon('heroicon-o-document')
                     ->createAnother(false)
-                    ->modalSubmitActionLabel('Save')
+                    ->modalSubmitActionLabel('Simpan')
+                    ->modalCancelActionLabel('Batal')
                     ->authorize(true)
                     ->closeModalByClickingAway(false)
                     ->mountUsing(function (Form $form) {
@@ -150,7 +152,10 @@ class BorangPenanganansRelationManager extends RelationManager
                 Tables\Actions\ViewAction::make()
                     ->label('Lihat')
                     ->modalHeading('Borang Penanganan')
-                    ->fillForm(fn(BorangPenanganan $record) => $this->fillReadOnlyData($record)),
+                    ->fillForm(fn(BorangPenanganan $record) => $this->fillReadOnlyData($record))
+                    ->modalCancelActionLabel('Tutup')
+                    ->modalSubmitAction(false)
+                    ->closeModalByClickingAway(false),
                 Tables\Actions\Action::make('export_pdf')
                     ->label('PDF')
                     ->icon('heroicon-o-document-arrow-down')
@@ -159,6 +164,10 @@ class BorangPenanganansRelationManager extends RelationManager
                     ->openUrlInNewTab(),
                 Tables\Actions\DeleteAction::make()
                     ->label('Hapus')
+                    ->modalHeading('Hapus Borang Penanganan')
+                    ->modalDescription('Apakah Anda yakin ingin melakukan ini? Data tidak dapat dikembalikan.')
+                    ->modalSubmitActionLabel('Ya, Hapus Sekarang')
+                    ->modalCancelActionLabel('Batal')
                     ->authorize(true),
             ])
             ->bulkActions([

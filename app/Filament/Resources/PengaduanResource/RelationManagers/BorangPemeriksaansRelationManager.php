@@ -93,8 +93,10 @@ class BorangPemeriksaansRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->label('Buat Borang Pemeriksaan')
                     ->modalHeading('Borang Pemeriksaan')
+                    ->icon('heroicon-o-document')
                     ->createAnother(false)
-                    ->modalSubmitActionLabel('Save')
+                    ->modalSubmitActionLabel('Simpan')
+                    ->modalCancelActionLabel('Batal')
                     ->authorize(true)
                     ->closeModalByClickingAway(false)
                     ->mutateFormDataUsing(function (array $data): array {
@@ -140,7 +142,10 @@ class BorangPemeriksaansRelationManager extends RelationManager
                         }
 
                         $form->fill($data);
-                    }),
+                    })
+                    ->modalCancelActionLabel('Tutup')
+                    ->modalSubmitAction(false)
+                    ->closeModalByClickingAway(false),
                 Tables\Actions\Action::make('export_pdf')
                     ->label('PDF')
                     ->icon('heroicon-o-document-arrow-down')
@@ -149,6 +154,10 @@ class BorangPemeriksaansRelationManager extends RelationManager
                     ->openUrlInNewTab(),
                 Tables\Actions\DeleteAction::make()
                     ->label('Hapus')
+                    ->modalHeading('Hapus Borang Pemeriksaan')
+                    ->modalDescription('Apakah Anda yakin ingin melakukan ini? Data tidak dapat dikembalikan.')
+                    ->modalSubmitActionLabel('Ya, Hapus Sekarang')
+                    ->modalCancelActionLabel('Batal')
                     ->authorize(true),
             ]);
     }

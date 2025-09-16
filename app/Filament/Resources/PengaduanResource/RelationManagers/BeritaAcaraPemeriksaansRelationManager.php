@@ -136,9 +136,11 @@ class BeritaAcaraPemeriksaansRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->label('Buat Berita Acara Pemeriksaan')
                     ->modalHeading('Berita Acara Pemeriksaan')
+                    ->icon('heroicon-o-document')
                     ->form($this->getFormSchema())
                     ->createAnother(false)
-                    ->modalSubmitActionLabel('Save')
+                    ->modalSubmitActionLabel('Simpan')
+                    ->modalCancelActionLabel('Batal')
                     ->authorize(true)
                     ->closeModalByClickingAway(false)
                     ->mountUsing(function (Form $form) {
@@ -235,6 +237,10 @@ class BeritaAcaraPemeriksaansRelationManager extends RelationManager
                     ->openUrlInNewTab(),
                 Tables\Actions\DeleteAction::make()
                     ->label('Hapus')
+                    ->modalHeading('Hapus Berita Acara Pemeriksaan')
+                    ->modalDescription('Apakah Anda yakin ingin melakukan ini? Data tidak dapat dikembalikan.')
+                    ->modalSubmitActionLabel('Ya, Hapus Sekarang')
+                    ->modalCancelActionLabel('Batal')
                     ->authorize(true),
             ])
             ->bulkActions([

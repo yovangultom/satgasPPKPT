@@ -139,8 +139,10 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->label('Buat Laporan Hasil Pemeriksaan')
                     ->modalHeading('Laporan Hasil Pemeriksaan')
+                    ->icon('heroicon-o-document')
                     ->createAnother(false)
-                    ->modalSubmitActionLabel('Save')
+                    ->modalSubmitActionLabel('Simpan')
+                    ->modalCancelActionLabel('Batal')
                     ->authorize(true)
                     ->closeModalByClickingAway(false)
                     ->mutateFormDataUsing(function (array $data): array {
@@ -151,7 +153,6 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
                         $pengaduan = $this->getOwnerRecord();
                         $pengaduan->update(['status_pengaduan' => 'Penyusunan Kesimpulan dan Rekomendasi']);
 
-                        // Muat ulang record untuk mendapatkan status terbaru
                         $pengaduan->refresh();
 
                         $user = $pengaduan->user;
@@ -167,7 +168,6 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
                         Notification::make()
                             ->success()
                             ->title('LHP Berhasil Dibuat')
-                            // --- Pesan notifikasi diperbarui ---
                             ->body('Status pengaduan telah diperbarui dan notifikasi telah dikirim ke pengguna.')
                     ),
             ])
@@ -194,8 +194,12 @@ class LaporanHasilPemeriksaansRelationManager extends RelationManager
                     })
                     ->openUrlInNewTab(),
                 Tables\Actions\DeleteAction::make()
-                    ->authorize(true)
-                    ->label('Hapus'),
+                    ->label('Hapus')
+                    ->modalHeading('Hapus Laporan Hasil Pemeriksaan')
+                    ->modalDescription('Apakah Anda yakin ingin melakukan ini? Data tidak dapat dikembalikan.')
+                    ->modalSubmitActionLabel('Ya, Hapus Sekarang')
+                    ->modalCancelActionLabel('Batal')
+                    ->authorize(true),
             ]);
     }
 

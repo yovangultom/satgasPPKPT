@@ -10,12 +10,11 @@ class ListUsers extends ListRecords
 {
     protected static string $resource = UserResource::class;
     protected static ?string $title = 'Akun';
-    protected static ?string $breadcrumb = 'Daftar Akun';
+    protected static ?string $breadcrumb = 'List Akun';
 
     protected function getHeaderActions(): array
     {
         return [
-            // Kita definisikan ulang CreateAction di sini
             Actions\CreateAction::make()
                 ->createAnother(false)
                 ->label('Tambah Akun')

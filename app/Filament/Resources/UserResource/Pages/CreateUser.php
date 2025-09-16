@@ -15,6 +15,6 @@ class CreateUser extends CreateRecord
 
     protected function getCreateFormAction(): Actions\Action
     {
-        return parent::getCreateFormAction()->label('Tambahkan');
+        return parent::getCreateFormAction()->label('Simpan');
     }
 }

@@ -88,7 +88,7 @@ class SuratKeputusanResource extends Resource
                     ->icon('heroicon-o-arrow-up-tray')
                     ->form([
                         Forms\Components\FileUpload::make('file_sk_path')
-                            ->label('File Surat Keputusan (PDF)')
+                            ->label('File Surat Keputusan (PDF) *maksimal 10MB')
                             ->required()
                             ->disk('public')
                             ->directory('surat-keputusan')
@@ -98,8 +98,10 @@ class SuratKeputusanResource extends Resource
                             ->placeholder('Tambah email lalu tekan Enter')
                             ->helperText('Anda bisa menambahkan lebih dari satu email.')
                             ->required()
-                            ->nestedRecursiveRules('email'),
+                            ->nestedRecursiveRules('email')
                     ])
+                    ->modalSubmitActionLabel('Kirim')
+                    ->modalCancelActionLabel('Batal')
                     ->action(function (SuratRekomendasi $record, array $data) {
                         $record->update([
                             'file_sk_path' => $data['file_sk_path'],

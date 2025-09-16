@@ -9,6 +9,8 @@ use Filament\Resources\Pages\ListRecords;
 class ListPasalPelanggarans extends ListRecords
 {
     protected static string $resource = PasalPelanggaranResource::class;
+    protected static ?string $breadcrumb = 'List Data Pasal Pelanggaran';
+
 
     protected function getHeaderActions(): array
     {

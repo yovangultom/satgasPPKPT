@@ -53,6 +53,10 @@ class ReviewPersetujuan extends Page implements HasForms, HasActions
                         ->label('Komentar atau Catatan (Opsional)')
                         ->rows(3),
                 ])
+                ->modalHeading('Setujui Rekomendasi')
+                ->modalDescription('Apakah Anda yakin ingin menyetujui rekomendasi ini? Tindakan ini tidak dapat dibatalkan.')
+                ->modalSubmitActionLabel('Ya, Setujui')
+                ->modalCancelActionLabel('Batal')
                 ->action(function (array $data) {
                     $this->updateStatus('Disetujui', $data['komentar_setuju']);
                 }),
@@ -68,6 +72,10 @@ class ReviewPersetujuan extends Page implements HasForms, HasActions
                         ->rows(3)
                         ->required(),
                 ])
+                ->modalHeading('Tolak Rekomendasi')
+                ->modalDescription('Pastikan Anda sudah mengisi alasan penolakan dengan jelas.')
+                ->modalSubmitActionLabel('Ya, Tolak')
+                ->modalCancelActionLabel('Batal')
                 ->action(function (array $data) {
                     $this->updateStatus('Ditolak', $data['komentar_tolak']);
                 }),

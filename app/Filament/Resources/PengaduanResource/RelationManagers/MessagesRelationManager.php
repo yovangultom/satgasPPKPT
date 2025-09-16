@@ -63,9 +63,13 @@ class MessagesRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()
                     ->label('Kirim Pesan Baru')
+                    ->icon('heroicon-o-chat-bubble-left-right')
                     ->modalHeading('Buat Pesan')
+                    ->modalSubmitActionLabel('Kirim')
+                    ->modalCancelActionLabel('Batal')
                     ->authorize(true)
                     ->createAnother(false)
+                    ->closeModalByClickingAway(false)
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = auth()->id();
                         return $data;
