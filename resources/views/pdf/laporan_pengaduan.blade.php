@@ -303,7 +303,7 @@
                 <p>Bandar Lampung, {{ $pengaduan->tanggal_pelaporan->translatedFormat('j F Y') }}</p>
                 @if ($pengaduan->tanda_tangan_pelapor_image_url)
                     <img src="{{ public_path(str_replace(url('/'), '', $pengaduan->tanda_tangan_pelapor_image_url)) }}"
-                        alt="Tanda Tangan" style="max-width: 120px; display: block;">
+                        alt="Tanda Tangan" style="height: 60px; margin: 5px auto; display:block;">
                 @else
                     <div style="height: 80px;">
                         <p>(Tidak ada tanda tangan)</p>
