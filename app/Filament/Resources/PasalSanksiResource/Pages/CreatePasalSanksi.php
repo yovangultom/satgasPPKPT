@@ -10,6 +10,7 @@ class CreatePasalSanksi extends CreateRecord
 {
     protected static string $resource = PasalSanksiResource::class;
     protected static ?string $title = 'Tambah Pasal Sanksi';
+    protected static ?string $breadcrumb = 'Tambah';
 
     protected function getCreateFormAction(): Actions\Action
     {
