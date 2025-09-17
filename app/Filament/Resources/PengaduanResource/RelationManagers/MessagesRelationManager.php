@@ -35,6 +35,7 @@ class MessagesRelationManager extends RelationManager
                     ->label('Lampiran File')
                     ->disk('public')
                     ->directory('attachments')
+                    ->helperText('Unggah file dalam format ZIP, RAR, JPG, atau PNG. Ukuran maksimal 5 MB.')
                     ->acceptedFileTypes(['application/zip', 'application/vnd.rar', 'application/x-rar-compressed', 'image/jpeg', 'image/png'])
                     ->maxSize(5120)
                     ->afterStateUpdated(function (Set $set, ?\Livewire\Features\SupportFileUploads\TemporaryUploadedFile $state) {
