@@ -37,7 +37,6 @@ return new class extends Migration
             });
         }
 
-        // Menambahkan skema untuk surat_panggilans
         Schema::table('surat_panggilans', function (Blueprint $table) {
             if (Schema::hasColumn('surat_panggilans', 'file_path') && !Schema::hasColumn('surat_panggilans', 'pdf_path')) {
                 $table->renameColumn('file_path', 'pdf_path');
@@ -76,7 +75,6 @@ return new class extends Migration
             });
         }
 
-        // Membalikkan perubahan untuk surat_panggilans
         Schema::table('surat_panggilans', function (Blueprint $table) {
             if (Schema::hasColumn('surat_panggilans', 'pdf_path') && !Schema::hasColumn('surat_panggilans', 'file_path')) {
                 $table->renameColumn('pdf_path', 'file_path');

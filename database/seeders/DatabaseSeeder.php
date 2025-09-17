@@ -17,8 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PasalPelanggaranSeeder::class);
         $this->call(PasalSanksiSeeder::class);
 
-        // User::factory()->create([
-        //     //    
-        // ]);
+      
     }
 }

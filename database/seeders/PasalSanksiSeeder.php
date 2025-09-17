@@ -9,7 +9,6 @@ class PasalSanksiSeeder extends Seeder
 {
     public function run(): void
     {
-        // Sanksi untuk Dosen ASN
         PasalSanksi::create(['jenis_sanksi' => 'Ringan', 'pelaku' => 'Dosen ASN', 'pasal' => '68', 'ayat' => '(1)', 'butir' => '-', 'keterangan' => 'Sesuai dengan ketentuan peraturan perundang-undangan']);
         PasalSanksi::create(['jenis_sanksi' => 'Ringan', 'pelaku' => 'Tenaga Kependidikan ASN', 'pasal' => '68', 'ayat' => '(1)', 'butir' => '-', 'keterangan' => 'Sesuai dengan ketentuan peraturan perundang-undangan']);
         PasalSanksi::create(['jenis_sanksi' => 'Ringan', 'pelaku' => 'Dosen Non-ASN', 'pasal' => '68', 'ayat' => '(3)', 'butir' => 'a', 'keterangan' => 'Teguran Tertulis']);

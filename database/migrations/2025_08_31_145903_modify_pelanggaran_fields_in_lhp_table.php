@@ -12,10 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('laporan_hasil_pemeriksaans', function (Blueprint $table) {
-            // Menambahkan kolom baru untuk menyimpan data terstruktur
             $table->json('pelanggaran_data')->nullable()->after('berita_acara_pemeriksaan_id');
-
-            // Menghapus kolom lama yang sudah tidak relevan
             if (Schema::hasColumn('laporan_hasil_pemeriksaans', 'jenis_kekerasan')) {
                 $table->dropColumn('jenis_kekerasan');
             }
@@ -32,7 +29,6 @@ return new class extends Migration
     {
         Schema::table('laporan_hasil_pemeriksaans', function (Blueprint $table) {
             $table->dropColumn('pelanggaran_data');
-            // Menambahkan kembali kolom lama jika di-rollback
             $table->json('jenis_kekerasan')->nullable();
             $table->json('pasal_pelanggaran_id')->nullable();
         });

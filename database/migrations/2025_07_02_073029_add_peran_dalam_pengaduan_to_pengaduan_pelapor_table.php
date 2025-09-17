@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pengaduan_pelapor', function (Blueprint $table) {
-            // Menambahkan kolom baru setelah kolom 'pelapor_id'
             $table->string('peran_dalam_pengaduan')->after('pelapor_id')->nullable();
         });
     }
