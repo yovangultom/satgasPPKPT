@@ -7,7 +7,7 @@
             <th scope="col" class="p-4">Nomor Pengaduan</th>
             <th scope="col" class="p-4">Jenis Kejadian</th>
             <th scope="col" class="p-4">Tanggal Pelaporan</th>
-            <th scope="col" class="p-4">Status</th>
+            <th scope="col" class="p-4">Status Pengaduan</th>
             <th scope="col" class="p-4">Aksi</th>
         </tr>
     </thead>
