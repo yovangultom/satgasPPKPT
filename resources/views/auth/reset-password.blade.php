@@ -43,7 +43,7 @@
 
                 <div class="flex items-center justify-end mt-8">
                     <x-primary-button
-                        class="w-full flex justify-center py-3 bg-gray-800 hover:bg-gray-900 focus:bg-gray-700 active:bg-gray-900">
+                        class="w-full flex justify-center py-3 bg-indigo-600 hover:bg-indigo-500 focus:bg-indigo-500 active:bg-indigo-700">
                         {{ __('Atur Ulang Password') }}
                     </x-primary-button>
                 </div>

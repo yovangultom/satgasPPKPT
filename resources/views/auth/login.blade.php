@@ -71,7 +71,7 @@
 
                 <div class="flex items-center justify-end mt-6">
                     <x-primary-button
-                        class="w-full flex justify-center py-3 ms-3 bg-blue-600 hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-800">
+                        class="w-full flex justify-center py-3 ms-3 bg-indigo-600 hover:bg-indigo-500 focus:bg-indigo-500 active:bg-indigo-600">
                         {{ __('Log in') }}
                     </x-primary-button>
                 </div>
