@@ -12,7 +12,7 @@ class PengaduanStatsOverview extends BaseWidget
 {
     public static function canView(): bool
     {
-        return Auth::user()->hasAnyRole(['admin', 'petugas']);
+        return Auth::user()->hasAnyRole(['admin', 'petugas', 'penanggung jawab']);
     }
     protected function getStats(): array
     {

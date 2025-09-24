@@ -51,7 +51,6 @@ class UserResource extends Resource
                     ->dehydrated(fn(?string $state): bool => filled($state))
                     ->required(fn(string $operation): bool => $operation === 'create'),
 
-                // --- PERUBAHAN 1: Mengganti logika Role dan Status ---
                 Select::make('roles')
                     ->relationship('roles', 'name')
                     ->label('Role')
@@ -61,13 +60,13 @@ class UserResource extends Resource
                     ->live()
                     ->afterStateUpdated(function (Set $set, ?string $state) {
                         $roleName = Role::find($state)?->name;
-                        if (in_array($roleName, ['rektor', 'htl'])) {
+                        if (in_array($roleName, ['rektor', 'htl', 'penanggung jawab'])) {
                             $set('status', 'dosen');
                         }
                     })
                     ->options(function () {
                         if (Auth::user()->hasRole('admin')) {
-                            return Role::whereIn('name', ['petugas', 'rektor', 'htl'])->pluck('name', 'id');
+                            return Role::whereIn('name', ['petugas', 'rektor', 'htl', 'penanggung jawab'])->pluck('name', 'id');
                         }
                         return [];
                     }),
@@ -88,7 +87,7 @@ class UserResource extends Resource
                         if (!$roleId) return true;
 
                         $roleName = Role::find($roleId)?->name;
-                        return !in_array($roleName, ['rektor', 'htl']);
+                        return !in_array($roleName, ['rektor', 'htl', 'penanggung jawab']);
                     }),
 
                 Forms\Components\TextInput::make('nim')
@@ -169,7 +168,7 @@ class UserResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->whereHas('roles', function (Builder $query) {
-            $query->whereIn('name', ['admin', 'petugas', 'rektor', 'htl']);
+            $query->whereIn('name', ['admin', 'petugas', 'rektor', 'htl', 'penanggung jawab']);
         });
     }
 

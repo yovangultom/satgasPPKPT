@@ -12,13 +12,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Tables\Filters\SelectFilter; // <-- Import SelectFilter
+use Filament\Tables\Filters\SelectFilter;
 
 class PersetujuanRektorResource extends Resource
 {
     protected static ?string $model = SuratRekomendasi::class;
-
-    // --- PENGATURAN NAVIGASI ---
     protected static ?string $navigationIcon = 'heroicon-o-check-badge';
     protected static ?string $navigationLabel = 'Persetujuan Surat';
     protected static ?string $modelLabel = 'Persetujuan Surat Rekomendasi';
@@ -28,6 +26,12 @@ class PersetujuanRektorResource extends Resource
     public static function canViewAny(): bool
     {
         return Auth::user()->hasRole('rektor');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('status_penanggung_jawab', 'Disetujui');
     }
 
     public static function form(Form $form): Form
@@ -60,24 +64,7 @@ class PersetujuanRektorResource extends Resource
                     ->dateTime('d M Y H:i')
                     ->sortable(),
             ])
-            ->filters([
-                SelectFilter::make('status_rektor')
-                    ->label('Status Persetujuan')
-                    ->options([
-                        'Menunggu Persetujuan' => 'Menunggu Persetujuan',
-                        'Sudah Diproses' => 'Sudah Diproses',
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        if ($data['value'] === 'Sudah Diproses') {
-                            return $query->whereIn('status_rektor', ['Disetujui', 'Ditolak']);
-                        }
-                        if ($data['value'] === 'Menunggu Persetujuan') {
-                            return $query->where('status_rektor', 'Menunggu Persetujuan');
-                        }
-                        return $query;
-                    })
-                    ->default('Menunggu Persetujuan'),
-            ])
+
             ->actions([
                 Tables\Actions\Action::make('review')
                     ->label('Tinjau & Beri Respon')

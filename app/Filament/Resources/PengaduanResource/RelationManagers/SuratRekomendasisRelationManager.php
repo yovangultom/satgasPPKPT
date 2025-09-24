@@ -19,9 +19,11 @@ use App\Models\User;
 use App\Notifications\RekomendasiBaruNotification;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification as FilamentNotification;
+use Filament\Notifications\Actions\Action as NotificationAction;
 use Illuminate\Support\Facades\Notification;
 use Filament\Forms\Components\Placeholder;
 use Illuminate\Support\Facades\Log;
+use Filament\Tables\Actions\Action;
 
 
 class SuratRekomendasisRelationManager extends RelationManager
@@ -31,7 +33,7 @@ class SuratRekomendasisRelationManager extends RelationManager
 
     public function canView(Model $record): bool
     {
-        return auth()->user()->hasAnyRole(['admin', 'petugas']);
+        return auth()->user()->hasAnyRole(['admin', 'petugas', 'penanggung jawab']);
     }
 
     public function canDelete(Model $record): bool
@@ -301,9 +303,8 @@ class SuratRekomendasisRelationManager extends RelationManager
                     ->badge()
                     ->formatStateUsing(fn(string $state): string => ucfirst(str_replace('_', ' ', $state)))
                     ->color(fn($state) => $state === 'terbukti' ? 'success' : 'danger'),
-
-                Tables\Columns\TextColumn::make('status_rektor')
-                    ->label('Status Persetujuan')
+                Tables\Columns\TextColumn::make('status_penanggung_jawab')
+                    ->label('Status Persetujuan PJ')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'Menunggu Persetujuan' => 'warning',
@@ -311,11 +312,24 @@ class SuratRekomendasisRelationManager extends RelationManager
                         'Ditolak' => 'danger',
                         default => 'gray',
                     }),
+                Tables\Columns\TextColumn::make('komentar_penanggung_jawab')
+                    ->label('Komentar PJ')
+                    ->wrap(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Tanggal Dibuat')
                     ->dateTime('d M Y H:i')
                     ->sortable(),
-
+                Tables\Columns\TextColumn::make('status_rektor')
+                    ->label('Status Persetujuan Rektor')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'Menunggu Persetujuan' => 'warning',
+                        'Disetujui' => 'success',
+                        'Ditolak' => 'danger',
+                        'Belum Diproses' => 'gray',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('komentar_rektor')
                     ->label('Komentar Rektor')
                     ->wrap(),
@@ -331,6 +345,7 @@ class SuratRekomendasisRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->label('Buat Surat Rekomendasi')
+                    ->visible(fn(): bool => auth()->user()->hasAnyRole(['admin', 'petugas']))
                     ->modalHeading('Surat Rekomendasi')
                     ->icon('heroicon-o-document')
                     ->createAnother(false)
@@ -370,12 +385,27 @@ class SuratRekomendasisRelationManager extends RelationManager
                         }
 
                         $data['user_id'] = Auth::id();
+                        $data['status_penanggung_jawab'] = 'Menunggu Persetujuan';
+                        $data['status_rektor'] = 'Belum Diproses';
                         return $data;
                     })
                     ->after(function (Model $record) {
                         /** @var \App\Models\Pengaduan $pengaduan */
                         $pengaduan = $this->getOwnerRecord();
                         $pengaduan->update(['status_pengaduan' => 'Tindak Lanjut Kesimpulan dan Rekomendasi']);
+
+                        $penanggungJawabUsers = User::role('penanggung jawab')->get();
+                        if ($penanggungJawabUsers->isNotEmpty()) {
+                            FilamentNotification::make()
+                                ->title('Persetujuan Surat Rekomendasi Baru')
+                                ->body("Surat Rekomendasi baru untuk kasus No. {$record->nomor_surat} memerlukan persetujuan Anda.")
+                                ->actions([
+                                    NotificationAction::make('view')
+                                        ->label('Lihat Detail')
+                                        ->url(fn() => \App\Filament\Resources\PersetujuanPJResource::getUrl('index'))
+                                ])
+                                ->sendToDatabase($penanggungJawabUsers);
+                        }
 
                         Log::info("Mempersiapkan untuk dispatch Job untuk SR ID: {$record->id}");
                         \App\Jobs\GenerateMergedRekomendasiPdf::dispatch($record);
@@ -411,7 +441,8 @@ class SuratRekomendasisRelationManager extends RelationManager
                     ->modalSubmitActionLabel('Ya, Hapus Sekarang')
                     ->modalCancelActionLabel('Batal')
                     ->authorize(true)
-                    ->visible(fn(SuratRekomendasi $record): bool => $record->status_rektor === 'Menunggu Persetujuan'),
+                    ->visible(fn() => auth()->user()->hasRole('admin')),
+
             ]);
     }
 

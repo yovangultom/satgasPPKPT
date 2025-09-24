@@ -16,7 +16,7 @@ class EnsureUserIsPengguna
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->hasAnyRole(['admin', 'petugas', 'rektor', 'htl'])) {
+        if (Auth::check() && Auth::user()->hasAnyRole(['admin', 'petugas', 'rektor', 'htl', 'penanggung jawab'])) {
             return redirect()->route('filament.admin.pages.dashboard');
         }
         return $next($request);

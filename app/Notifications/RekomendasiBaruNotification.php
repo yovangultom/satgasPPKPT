@@ -33,7 +33,7 @@ class RekomendasiBaruNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'mail']; // Kirim ke database (Filament) dan email
+        return ['database', 'mail'];
     }
 
     /**

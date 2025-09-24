@@ -1,39 +1,36 @@
 <?php
 
-namespace App\Filament\Resources\PersetujuanRektorResource\Pages;
+namespace App\Filament\Resources\PersetujuanPJResource\Pages;
 
-use App\Filament\Resources\PersetujuanRektorResource;
-use App\Filament\Resources\SuratKeputusanResource;
+use App\Filament\Resources\PersetujuanPJResource;
 use App\Models\SuratRekomendasi;
 use App\Models\User;
-use Filament\Resources\Pages\Page;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Forms\Components\Textarea;
-use Filament\Actions\Action;
 use Filament\Notifications\Notification;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
+use Filament\Resources\Pages\Page;
+use Filament\Notifications\Notification as FilamentNotification;
 use Filament\Notifications\Actions\Action as NotificationAction;
 
 
-class ReviewPersetujuan extends Page implements HasForms, HasActions
+class ViewPersetujuanPJ extends Page implements HasForms, HasActions
 {
     use InteractsWithForms;
     use InteractsWithActions;
 
-    protected static string $resource = PersetujuanRektorResource::class;
+    protected static string $resource = PersetujuanPJResource::class;
+    protected static ?string $pluralModelLabel = 'Persetujuan Surat Rekomendasi';
+    protected static ?string $title = 'Tinjau Persetujuan Surat Rekomendasi';
 
 
-    protected static string $view = 'filament.resources.persetujuan-rektor-resource.pages.review-persetujuan';
+    protected static string $view = 'filament.resources.persetujuan-pj-resource.pages.view-persetujuan-pj';
 
     public SuratRekomendasi $record;
-
-    public function mount(): void
-    {
-        // 
-    }
 
     public function form(Form $form): Form
     {
@@ -54,11 +51,9 @@ class ReviewPersetujuan extends Page implements HasForms, HasActions
                         ->rows(3),
                 ])
                 ->modalHeading('Setujui Rekomendasi')
-                ->modalDescription('Apakah Anda yakin ingin menyetujui rekomendasi ini? Tindakan ini tidak dapat dibatalkan.')
                 ->modalSubmitActionLabel('Ya, Setujui')
-                ->modalCancelActionLabel('Batal')
                 ->action(function (array $data) {
-                    $this->updateStatus('Disetujui', $data['komentar_setuju']);
+                    $this->updateStatus('Disetujui', $data['komentar_setuju'] ?? null);
                 }),
 
             Action::make('tolak')
@@ -73,9 +68,7 @@ class ReviewPersetujuan extends Page implements HasForms, HasActions
                         ->required(),
                 ])
                 ->modalHeading('Tolak Rekomendasi')
-                ->modalDescription('Pastikan Anda sudah mengisi alasan penolakan dengan jelas.')
                 ->modalSubmitActionLabel('Ya, Tolak')
-                ->modalCancelActionLabel('Batal')
                 ->action(function (array $data) {
                     $this->updateStatus('Ditolak', $data['komentar_tolak']);
                 }),
@@ -85,43 +78,43 @@ class ReviewPersetujuan extends Page implements HasForms, HasActions
     protected function updateStatus(string $status, ?string $comment = null): void
     {
         $this->record->update([
-            'status_rektor' => $status,
-            'komentar_rektor' => $comment,
-            'tanggal_respon_rektor' => now(),
+            'status_penanggung_jawab' => $status,
+            'komentar_penanggung_jawab' => $comment,
+            'tanggal_respon_penanggung_jawab' => now(),
         ]);
-
         $petugasPembuat = $this->record->user;
 
         if ($status === 'Disetujui') {
-            $htlUsers = User::role('htl')->get();
-            $this->record->pengaduan()->update(['status_pengaduan' => 'Selesai']);
+            $this->record->update(['status_rektor' => 'Menunggu Persetujuan']);
+            $rektorUsers = User::role('rektor')->get();
 
-            if ($htlUsers->isNotEmpty()) {
-                Notification::make()
-                    ->title('Surat Rekomendasi Telah Disetujui')
-                    ->body("Surat Rekomendasi No. {$this->record->nomor_surat} perlu penerbitan SK.")
+            if ($rektorUsers->isNotEmpty()) {
+                FilamentNotification::make()
+                    ->title('Persetujuan Surat Rekomendasi Lanjutan')
+                    ->body("Surat Rekomendasi No. {$this->record->nomor_surat} telah disetujui oleh PJ dan memerlukan persetujuan Anda.")
                     ->actions([
                         NotificationAction::make('view')
                             ->label('Lihat Detail')
-                            ->url(SuratKeputusanResource::getUrl('index'))
+                            ->url(fn() => \App\Filament\Resources\PersetujuanRektorResource::getUrl('index'))
                     ])
-                    ->sendToDatabase($htlUsers);
+                    ->sendToDatabase($rektorUsers);
             }
         } elseif ($status === 'Ditolak') {
             if ($petugasPembuat) {
-                Notification::make()
+                FilamentNotification::make()
                     ->danger()
-                    ->title('Surat Rekomendasi Ditolak oleh Rektor')
-                    ->body("Surat Rekomendasi No. {$this->record->nomor_surat} yang Anda buat telah ditolak oleh Rektor.")
+                    ->title('Surat Rekomendasi Ditolak oleh PJ')
+                    ->body("Surat Rekomendasi No. {$this->record->nomor_surat} yang Anda buat telah ditolak oleh Penanggung Jawab.")
                     ->sendToDatabase($petugasPembuat);
             }
         }
+
         Notification::make()
             ->title('Respon Berhasil Disimpan')
-            ->body("Surat rekomendasi telah ditandai sebagai '$status'.")
+            ->body("Status persetujuan telah ditandai sebagai '$status'.")
             ->success()
             ->send();
 
-        $this->redirect(PersetujuanRektorResource::getUrl('index'));
+        $this->redirect(PersetujuanPJResource::getUrl('index'));
     }
 }

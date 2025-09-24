@@ -84,7 +84,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         if ($this->email === 'yovan.119140131@student.itera.ac.id') {
             return true;
         }
-        return $this->hasAnyRole(['admin', 'petugas', 'rektor', 'htl']);
+        return $this->hasAnyRole(['admin', 'petugas', 'rektor', 'htl', 'penanggung jawab']);
     }
     public function sendPasswordResetNotification($token)
     {

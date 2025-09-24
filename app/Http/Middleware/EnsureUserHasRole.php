@@ -22,7 +22,7 @@ class EnsureUserHasRole
 
         $user = Auth::user();
 
-        if ($user->hasAnyRole(['admin', 'petugas', 'rektor', 'htl'])) {
+        if ($user->hasAnyRole(['admin', 'petugas', 'rektor', 'htl', 'penanggung jawab'])) {
             return $next($request);
         }
 

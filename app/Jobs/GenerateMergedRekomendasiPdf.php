@@ -135,11 +135,6 @@ class GenerateMergedRekomendasiPdf implements ShouldQueue
             $suratRekomendasi->update(['file_gabungan_path' => $fileName]);
             Log::info("Path di database berhasil diperbarui.");
 
-            $rektors = User::role('rektor')->get();
-            if ($rektors->isNotEmpty()) {
-                Notification::send($rektors, new RekomendasiBaruNotification($suratRekomendasi));
-                Log::info("Notifikasi berhasil dikirim ke " . $rektors->count() . " rektor.");
-            }
 
             Log::info("Job GenerateMergedRekomendasiPdf untuk SR ID: {$suratRekomendasi->id} SELESAI.");
         } catch (CrossReferenceException | PdfReaderException $e) {

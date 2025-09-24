@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Hash;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
@@ -20,6 +17,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $petugasRole = Role::firstOrCreate(['name' => 'petugas', 'guard_name' => 'web']);
         $rektorRole = Role::firstOrCreate(['name' => 'rektor', 'guard_name' => 'web']);
         $htlRole = Role::firstOrCreate(['name' => 'htl', 'guard_name' => 'web']);
+        $pjRole = Role::firstOrCreate(['name' => 'penanggung jawab', 'guard_name' => 'web']);
 
         $adminUser = User::firstOrCreate(
             ['email' => 'yovan.119140131@student.itera.ac.id'],

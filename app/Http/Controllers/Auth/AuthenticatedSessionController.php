@@ -30,7 +30,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
-        if ($user->hasAnyRole(['admin', 'petugas', 'rektor', 'htl'])) {
+        if ($user->hasAnyRole(['admin', 'petugas', 'rektor', 'htl', 'penanggung jawab'])) {
             return redirect()->intended(route('filament.admin.pages.dashboard', absolute: false));
         }
 

@@ -18,7 +18,7 @@ class RedirectIfAdminOrPetugas
     {
         if (Auth::check()) {
             $user = Auth::user();
-            if ($user->hasAnyRole(['admin', 'petugas', 'rektor', 'htl'])) {
+            if ($user->hasAnyRole(['admin', 'petugas', 'rektor', 'htl', 'penanggung jawab'])) {
                 return redirect()->route('filament.admin.pages.dashboard');
             }
         }

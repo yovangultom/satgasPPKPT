@@ -9,24 +9,20 @@ use Illuminate\Support\Facades\Auth;
 
 class RektorStatsOverview extends BaseWidget
 {
-    /**
-     * Widget ini hanya akan terlihat oleh pengguna dengan role 'rektor'.
-     */
     public static function canView(): bool
     {
         return Auth::user()->hasRole('rektor');
     }
 
-    /**
-     * Fungsi ini mengambil data dari database untuk ditampilkan di kartu statistik.
-     */
     protected function getStats(): array
     {
-        $totalSurat = SuratRekomendasi::count();
+        $totalSurat = SuratRekomendasi::where('status_penanggung_jawab', 'Disetujui')->count();
 
-        $menungguPersetujuan = SuratRekomendasi::where('status_rektor', 'Menunggu Persetujuan')->count();
+        $menungguPersetujuan = SuratRekomendasi::where('status_penanggung_jawab', 'Disetujui')
+            ->where('status_rektor', 'Menunggu Persetujuan')->count();
 
-        $selesaiDitinjau = SuratRekomendasi::whereIn('status_rektor', ['Disetujui', 'Ditolak'])->count();
+        $selesaiDitinjau = SuratRekomendasi::where('status_penanggung_jawab', 'Disetujui')
+            ->whereIn('status_rektor', ['Disetujui', 'Ditolak'])->count();
 
         return [
             Stat::make('Total Surat Diajukan', $totalSurat)
