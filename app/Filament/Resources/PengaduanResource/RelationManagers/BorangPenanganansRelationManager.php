@@ -92,7 +92,7 @@ class BorangPenanganansRelationManager extends RelationManager
                             ->label('Pihak yang telah dihubungi'),
 
                         TextInput::make('kerja_sama')
-                            ->label('Kemungkinan Kerja Sama Satgas PPKS Itera dengan Pihak Lain')
+                            ->label('Kemungkinan Kerja Sama Satgas PPKPT Itera dengan Pihak Lain')
                             ->columnSpanFull(),
                     ]),
             ]);
