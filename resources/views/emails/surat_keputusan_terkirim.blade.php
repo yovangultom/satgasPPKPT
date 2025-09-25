@@ -7,8 +7,12 @@
 
 <body style="font-family: sans-serif; color: #333;">
     <div style="text-align: center; margin-bottom: 20px;">
-        <img src="{{ url('images/Logo PPKPT 2025 Square Black - CROP.png') }}" alt="Logo PPKPT"
-            style="width: auto; max-width: 200px; height: auto; max-height: 75px; border: 0;">
+        <a href="{{ config('app.url') }}" style="display: inline-block;">
+            <img src="{{ url('images/Logo PPKPT 2025 Square Black - CROP.png') }}" class="logo" alt="Logo SATGAS PPKPT"
+                style="width: auto; max-width: 200px; height: auto; max-height: 75px; border: 0;">
+        </a>
+        {{-- <img src="{{ url('images/Logo PPKPT 2025 Square Black - CROP.png') }}" alt="Logo PPKPT"
+            style="width: auto; max-width: 200px; height: auto; max-height: 75px; border: 0;"> --}}
     </div>
     <h2>Penerbitan Surat Keputusan (SK)</h2>
     <p>Yth. Bapak/Ibu,</p>
